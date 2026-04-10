@@ -1,0 +1,47 @@
+/* Layer 3 — Table component tokens (consumed by table-classes.css) */
+@theme {
+  --table-bg-surface: var(--color-bg-primary);
+  --table-border-outer: var(--color-border-secondary);
+  --table-border-row: var(--color-border-secondary);
+  --table-fg-header: var(--color-fg-primary);
+  --table-fg-cell: var(--color-fg-primary);
+  --table-fg-cell-secondary: var(--color-fg-secondary);
+  --table-fg-cell-meta: var(--color-fg-tertiary);
+  --table-bg-header: var(--color-bg-primary);
+  --table-bg-row-idle: transparent;
+  --table-bg-row-hover: var(--color-bg-interactive-secondary-hovered);
+  --table-bg-row-selected: color-mix(in srgb, var(--color-primary) 8%, var(--color-bg-primary));
+
+  --table-tag-bg-success: var(--color-bg-status-success);
+  --table-tag-fg-success: var(--color-fg-status-success);
+  --table-tag-border-success: var(--color-border-status-success);
+  --table-tag-bg-neutral: var(--color-bg-secondary);
+  --table-tag-fg-neutral: var(--color-fg-tertiary);
+  --table-tag-border-neutral: var(--color-border-tertiary);
+
+  --table-avatar-bg: var(--color-bg-tertiary);
+  --table-avatar-fg: var(--color-fg-tertiary);
+
+  --table-action-fg: var(--color-fg-quaternary);
+  --table-action-fg-hover: var(--color-fg-secondary);
+  --table-action-bg-hover: var(--color-bg-interactive-tertiary-hovered);
+
+  --table-menu-bg: var(--color-bg-primary);
+  --table-menu-border: var(--color-border-secondary);
+  --table-menu-radius: var(--radius-m);
+  --table-menu-shadow:
+    0 20px 25px -5px color-mix(in srgb, var(--color-fg-primary) 8%, transparent),
+    0 8px 10px -6px color-mix(in srgb, var(--color-fg-primary) 6%, transparent);
+
+  --table-empty-message-fg: var(--color-fg-tertiary);
+  --table-empty-ring-bg: var(--color-bg-secondary);
+  --table-empty-ring-border: var(--color-border-tertiary);
+  --table-empty-pulse-border: var(--color-border-tertiary);
+  --table-empty-outer-border: var(--color-border-tertiary);
+  --table-empty-icon-fg: var(--color-border-tertiary);
+  --table-empty-accent-bg: var(--color-primary);
+  --table-empty-accent-fg: var(--color-fg-inverse-primary);
+
+  --table-shadow-card: 0 1px 2px color-mix(in srgb, var(--color-fg-primary) 5%, transparent);
+  --table-min-width-scroll: 43.75rem;
+}

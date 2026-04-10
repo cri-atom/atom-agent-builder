@@ -11,6 +11,8 @@
 @import "./styles/tokens/breakpoints/breakpoints.css";
 @import "./styles/components/button.css";
 @import "./styles/components/button-classes.css";
+@import "./styles/components/table.css";
+@import "./styles/components/table-classes.css";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;

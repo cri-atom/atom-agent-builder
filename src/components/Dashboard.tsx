@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Search, MoreVertical, Trash2, Copy, ExternalLink, Clock, Bot, Filter, ChevronDown, ArrowUpDown, MessageSquare, Power } from 'lucide-react';
+import { Plus, Search, MoreVertical, Copy, Bot, ChevronDown, ArrowUpDown, Power } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Flow } from '../types';
 import { Button } from './Button';
@@ -58,18 +58,21 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </div>
 
         {/* Table */}
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-          <table className="w-full text-left border-collapse">
+        <div className="table-page-card">
+          <div className="table-shell">
+            <table className="table">
             <thead>
-              <tr className="bg-white border-b border-gray-200">
-                <th className="px-6 py-4 text-sm font-bold text-[#1A1A1A]">Nombre</th>
-                <th className="px-6 py-4 text-sm font-bold text-[#1A1A1A]">Estado</th>
-                <th className="px-6 py-4 text-sm font-bold text-[#1A1A1A] flex items-center gap-1">
-                  F. Última Edición
-                  <ArrowUpDown className="w-3 h-3" />
+              <tr className="table__head-row">
+                <th className="table__th">Nombre</th>
+                <th className="table__th">Estado</th>
+                <th className="table__th">
+                  <span className="table__th-sort-wrap">
+                    F. Última Edición
+                    <ArrowUpDown className="table__sort-icon" aria-hidden />
+                  </span>
                 </th>
-                <th className="px-6 py-4 text-sm font-bold text-[#1A1A1A]">Usuario del Último Cambio</th>
-                <th className="px-6 py-4 text-sm font-bold text-[#1A1A1A] text-right">Acciones</th>
+                <th className="table__th">Usuario del Último Cambio</th>
+                <th className="table__th table__th--end">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -77,36 +80,40 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 flows.map((flow) => (
                   <tr 
                     key={flow.id} 
-                    className="border-b border-gray-100 hover:bg-gray-50 transition-all cursor-pointer group"
+                    className="table__row cursor-pointer"
                     onClick={() => onOpenAgent(flow.id)}
                   >
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
-                          <Bot className="w-4 h-4 text-gray-500" />
+                    <td className="table__td">
+                      <div className="table__cell-lead">
+                        <div className="table__avatar">
+                          <Bot className="w-4 h-4" aria-hidden />
                         </div>
-                        <span className="text-sm font-bold text-[#1A1A1A]">{flow.name}</span>
+                        <span className="table__cell-title truncate">{flow.name}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className={`px-3 py-1 text-[11px] font-bold rounded-full border ${
-                        flow.status === 'publicado' || flow.status === 'activo'
-                          ? "bg-green-50 text-green-600 border-green-100" 
-                          : "bg-gray-50 text-gray-400 border-gray-100"
-                      }`}>
+                    <td className="table__td">
+                      <span
+                        className={
+                          flow.status === 'publicado' || flow.status === 'activo'
+                            ? 'table__tag table__tag--success'
+                            : 'table__tag table__tag--neutral'
+                        }
+                      >
                         {flow.status === 'publicado' ? 'Publicado' : flow.status === 'borrador' ? 'Borrador' : 'Activo'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{flow.lastEdited}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{flow.lastModifiedBy || 'Maria Pereira'}</td>
-                    <td className="px-6 py-4 text-right relative">
-                      <div className="flex items-center justify-end">
+                    <td className="table__td table__cell-meta">{flow.lastEdited}</td>
+                    <td className="table__td table__cell-meta">{flow.lastModifiedBy || 'Maria Pereira'}</td>
+                    <td className="table__td table__td--end">
+                      <div className="table__actions">
                         <button 
+                          type="button"
                           onClick={(e) => {
                             e.stopPropagation();
                             setOpenMenuId(openMenuId === flow.id ? null : flow.id);
                           }}
-                          className="p-2 hover:bg-gray-100 rounded-lg text-gray-400 hover:text-gray-600 transition-all"
+                          className="table__action-trigger"
+                          aria-label="Más acciones"
                         >
                           <MoreVertical className="w-4 h-4" />
                         </button>
@@ -115,7 +122,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                           {openMenuId === flow.id && (
                             <>
                               <div 
-                                className="fixed inset-0 z-40" 
+                                className="table__row-menu-backdrop" 
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setOpenMenuId(null);
@@ -125,7 +132,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                 initial={{ opacity: 0, scale: 0.95, y: -10 }}
                                 animate={{ opacity: 1, scale: 1, y: 0 }}
                                 exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                                className="absolute right-6 top-12 w-40 bg-white border border-gray-200 rounded-xl shadow-xl z-50 py-1 overflow-hidden"
+                                className="table__row-menu"
                               >
                                 <Button
                                   type="button"
@@ -165,27 +172,28 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="py-32">
-                    <div className="flex flex-col items-center justify-center text-center">
-                      <div className="relative mb-6">
-                        <div className="w-32 h-32 bg-gray-50 rounded-full flex items-center justify-center">
-                          <div className="w-24 h-24 border-2 border-dashed border-gray-200 rounded-full flex items-center justify-center">
-                            <Bot className="w-12 h-12 text-gray-200" />
+                  <td colSpan={5} className="table__td table__td--stretch">
+                    <div className="table__empty">
+                      <div className="table__empty-visual">
+                        <div className="table__empty-ring-outer">
+                          <div className="table__empty-ring-inner">
+                            <Bot className="table__empty-icon" aria-hidden />
                           </div>
                         </div>
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 border border-gray-100 rounded-full animate-pulse"></div>
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border border-gray-50 rounded-full"></div>
-                        <div className="absolute top-4 right-4 w-8 h-8 bg-[#FF6B00] rounded-full flex items-center justify-center shadow-lg">
-                          <Plus className="w-4 h-4 text-white" />
+                        <div className="table__empty-pulse" aria-hidden />
+                        <div className="table__empty-orbit" aria-hidden />
+                        <div className="table__empty-badge">
+                          <Plus className="table__empty-badge-icon" aria-hidden />
                         </div>
                       </div>
-                      <p className="text-lg font-medium text-gray-400">No hay agentes disponibles.</p>
+                      <p className="table__empty-message">No hay agentes disponibles.</p>
                     </div>
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
+          </div>
           
           {/* Pagination Footer */}
           <div className="px-6 py-4 bg-white border-t border-gray-100 flex items-center justify-between">
