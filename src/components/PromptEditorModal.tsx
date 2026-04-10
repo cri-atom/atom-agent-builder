@@ -249,8 +249,11 @@ export const PromptEditorModal: React.FC<PromptEditorModalProps> = ({
                           data.tools
                             .filter(t => t.name.toLowerCase().includes(mentionMenu.filter))
                             .map((tool) => (
-                              <button
+                              <Button
                                 key={tool.id}
+                                type="button"
+                                variant="Tertiary"
+                                size="s"
                                 onClick={() => {
                                   const value = data.instructions || '';
                                   const lastAt = value.lastIndexOf('@');
@@ -258,13 +261,15 @@ export const PromptEditorModal: React.FC<PromptEditorModalProps> = ({
                                   onUpdate({ instructions: newValue });
                                   setMentionMenu(null);
                                 }}
-                                className="w-full flex items-center gap-3 px-3 py-2 hover:bg-bg-secondary rounded-lg transition-all text-left group"
+                                className="group w-full !min-h-0 justify-start rounded-lg border-0 px-3 py-2 font-normal shadow-none hover:bg-bg-secondary"
+                                iconLeft={
+                                  <div className="rounded-md bg-bg-tertiary p-1.5 transition-colors group-hover:bg-white">
+                                    <Wrench className="h-3.5 w-3.5 text-fg-tertiary" />
+                                  </div>
+                                }
                               >
-                                <div className="p-1.5 bg-bg-tertiary rounded-md group-hover:bg-white transition-colors">
-                                  <Wrench className="w-3.5 h-3.5 text-fg-tertiary" />
-                                </div>
                                 <span className="label font-semibold text-fg-primary">{tool.name}</span>
-                              </button>
+                              </Button>
                             ))
                         ) : (
                           <div className="p-4 text-center">
@@ -301,7 +306,7 @@ export const PromptEditorModal: React.FC<PromptEditorModalProps> = ({
                   disabled={!assistantInput.trim()}
                   variant="Primary"
                   size="m"
-                  className="w-full py-3 shadow-lg shadow-primary/10"
+                  className="w-full"
                   iconLeft={<Sparkles size={16} />}
                 >
                   Refinar Prompt

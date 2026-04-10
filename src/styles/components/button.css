@@ -1,0 +1,30 @@
+/* Layer 3 — Button component tokens (consumed by button-classes.css) */
+@theme {
+  --buttons-bg-primary-enabled: #18181b;
+  --buttons-fg-primary-enabled: #ffffff;
+  --buttons-bg-primary-hovered: #09090b;
+  --buttons-bg-primary-focused: #000000;
+  --buttons-bg-primary-pressed: #000000;
+  --buttons-shadow-focus: 0 0 0 4px rgba(24, 24, 27, 0.1);
+  --buttons-border-primary-focused: #18181b;
+
+  --buttons-bg-secondary-enabled: #ffffff;
+  --buttons-fg-secondary-enabled: #18181b;
+  --buttons-border-secondary-enabled: #d4d4d8;
+  --buttons-bg-secondary-hovered: #fafafa;
+  --buttons-bg-secondary-focused: #f4f4f5;
+  --buttons-bg-secondary-pressed: #e4e4e7;
+
+  --buttons-bg-tertiary-enabled: transparent;
+  --buttons-fg-tertiary-enabled: #52525c;
+  --buttons-bg-tertiary-hovered: #fafafa;
+  --buttons-bg-tertiary-focused: #f4f4f5;
+  --buttons-bg-tertiary-pressed: #e4e4e7;
+
+  --buttons-bg-danger-primary-enabled: #fb2c37;
+  --buttons-fg-danger-primary-enabled: #ffffff;
+  --buttons-bg-danger-primary-hovered: #e0242f;
+  --buttons-bg-danger-primary-focused: #c51f29;
+  --buttons-bg-danger-primary-pressed: #aa1a23;
+  --buttons-shadow-focus-danger: 0 0 0 4px rgba(251, 44, 55, 0.2);
+}

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, Globe, MessageSquare, Layers, Tag, Plus, Trash2, ChevronDown, ChevronRight, ChevronLeft, Save, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { GlobalConfig, GlobalStage, GlobalTag, SaveField } from '../types';
+import { Button } from './Button';
 
 interface GlobalConfigPanelProps {
   config: GlobalConfig;
@@ -133,37 +134,46 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
                 <Layers className="w-4 h-4 text-fg-tertiary" />
                 <h3 className="label font-bold text-fg-tertiary uppercase tracking-wider">Etapas</h3>
               </div>
-              <button 
+              <Button
+                type="button"
+                variant="Tertiary"
+                size="s"
                 onClick={addStage}
-                className="flex items-center gap-1.5 text-primary hover:text-primary/80 transition-colors uppercase font-bold label-small"
+                className="border-0 p-0 font-normal uppercase shadow-none label-small font-bold text-primary hover:text-primary/80 hover:bg-transparent"
+                iconLeft={<Plus className="h-4 w-4 rounded-full border-2 border-primary p-0.5" />}
               >
-                <Plus className="w-4 h-4 border-2 border-primary rounded-full p-0.5" />
-                <span>Agregar</span>
-              </button>
+                Agregar
+              </Button>
             </div>
 
             {/* Pipeline Type Selector inside Stages */}
-            <div className="flex gap-2 p-1 bg-bg-secondary rounded-xl border border-border-tertiary">
-              <button
+            <div className="flex gap-2 rounded-xl border border-border-tertiary bg-bg-secondary p-1">
+              <Button
+                type="button"
+                variant="Tertiary"
+                size="s"
                 onClick={() => handleUpdate('pipelineType', 'venta')}
-                className={`flex-1 py-1.5 px-3 rounded-lg label-small font-bold transition-all ${
-                  config.pipelineType === 'venta' 
-                    ? 'bg-bg-primary text-primary shadow-sm' 
-                    : 'text-fg-tertiary hover:text-fg-secondary'
+                className={`flex-1 rounded-lg border-0 py-1.5 font-bold shadow-none label-small ${
+                  config.pipelineType === 'venta'
+                    ? 'bg-bg-primary text-primary shadow-sm'
+                    : 'text-fg-tertiary hover:bg-transparent hover:text-fg-secondary'
                 }`}
               >
                 Venta
-              </button>
-              <button
+              </Button>
+              <Button
+                type="button"
+                variant="Tertiary"
+                size="s"
                 onClick={() => handleUpdate('pipelineType', 'servicio')}
-                className={`flex-1 py-1.5 px-3 rounded-lg label-small font-bold transition-all ${
-                  config.pipelineType === 'servicio' 
-                    ? 'bg-bg-primary text-primary shadow-sm' 
-                    : 'text-fg-tertiary hover:text-fg-secondary'
+                className={`flex-1 rounded-lg border-0 py-1.5 font-bold shadow-none label-small ${
+                  config.pipelineType === 'servicio'
+                    ? 'bg-bg-primary text-primary shadow-sm'
+                    : 'text-fg-tertiary hover:bg-transparent hover:text-fg-secondary'
                 }`}
               >
                 Servicio
-              </button>
+              </Button>
             </div>
             
             <div className="space-y-3">
@@ -240,20 +250,27 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
 
           {/* Save Fields */}
           <div className="pt-4 border-t border-border-tertiary">
-            <button 
+            <Button
+              type="button"
+              variant="Tertiary"
+              size="m"
               onClick={() => setIsSaveFieldsOpen(!isSaveFieldsOpen)}
-              className="w-full flex items-center justify-between group"
+              className="group w-full !min-h-0 justify-between rounded-none border-0 p-0 font-normal shadow-none"
+              iconLeft={
+                <Save className="h-4 w-4 shrink-0 text-fg-tertiary transition-colors group-hover:text-primary" />
+              }
+              iconRight={
+                isSaveFieldsOpen ? (
+                  <ChevronDown className="h-4 w-4 shrink-0 text-fg-tertiary" />
+                ) : (
+                  <ChevronRight className="h-4 w-4 shrink-0 text-fg-tertiary" />
+                )
+              }
             >
-              <div className="flex items-center gap-2">
-                <Save className="w-4 h-4 text-fg-tertiary group-hover:text-primary transition-colors" />
-                <p className="label text-fg-tertiary uppercase group-hover:text-fg-primary transition-colors font-bold">Campos a identificar y guardar</p>
-              </div>
-              {isSaveFieldsOpen ? (
-                <ChevronDown className="w-4 h-4 text-fg-tertiary" />
-              ) : (
-                <ChevronRight className="w-4 h-4 text-fg-tertiary" />
-              )}
-            </button>
+              <span className="label font-bold uppercase text-fg-tertiary transition-colors group-hover:text-fg-primary">
+                Campos a identificar y guardar
+              </span>
+            </Button>
 
             <AnimatePresence>
               {isSaveFieldsOpen && (
@@ -279,13 +296,16 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
                       {config.saveFields?.map((field: SaveField) => (
                         <div key={field.id} className="flex items-center gap-3">
                           <div className="flex-1 relative">
-                            <button
+                            <Button
+                              type="button"
+                              variant="Secondary"
+                              size="m"
                               onClick={() => setIsFieldDropdownOpen(field.id)}
-                              className="w-full flex items-center justify-between px-4 py-2.5 bg-white border border-border-tertiary rounded-xl label text-fg-primary hover:border-primary/50 transition-all text-left"
+                              className="w-full justify-between rounded-xl border-border-tertiary bg-white font-normal shadow-none label text-fg-primary hover:border-primary/50"
+                              iconRight={<ChevronDown className="h-4 w-4 shrink-0 text-fg-tertiary" />}
                             >
                               <span className="truncate">{field.label}</span>
-                              <ChevronDown className="w-4 h-4 text-fg-tertiary flex-shrink-0" />
-                            </button>
+                            </Button>
 
                             <AnimatePresence>
                               {isFieldDropdownOpen === field.id && (
@@ -310,8 +330,11 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
                                     </div>
                                     <div className="max-h-48 overflow-y-auto">
                                       {['Nombre', 'Apellido', 'Email', 'Teléfono', 'Empresa', 'Dirección', 'Ciudad', 'País'].filter(f => f.toLowerCase().includes(fieldSearch.toLowerCase())).map(f => (
-                                        <button
+                                        <Button
                                           key={f}
+                                          type="button"
+                                          variant="Tertiary"
+                                          size="s"
                                           onClick={() => {
                                             const newFields = config.saveFields.map((sf: SaveField) => 
                                               sf.id === field.id ? { ...sf, label: f, type: 'optional' } : sf
@@ -320,10 +343,10 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
                                             setIsFieldDropdownOpen(null);
                                             setFieldSearch('');
                                           }}
-                                          className="w-full text-left px-4 py-2.5 label text-fg-primary hover:bg-bg-secondary transition-all"
+                                          className="w-full justify-start rounded-none border-0 px-4 py-2.5 font-normal shadow-none label text-fg-primary hover:bg-bg-secondary"
                                         >
                                           {f}
-                                        </button>
+                                        </Button>
                                       ))}
                                     </div>
                                   </motion.div>
@@ -343,13 +366,16 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
                     </div>
 
                     <div className="flex justify-end pt-2">
-                      <button 
+                      <Button
+                        type="button"
+                        variant="Tertiary"
+                        size="s"
                         onClick={addSaveField}
-                        className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors uppercase font-bold label"
+                        className="border-0 p-0 font-normal uppercase shadow-none label font-bold text-primary hover:text-primary/80 hover:bg-transparent"
+                        iconLeft={<Plus className="h-5 w-5 rounded-full border-2 border-primary p-0.5" />}
                       >
-                        <Plus className="w-5 h-5 border-2 border-primary rounded-full p-0.5" />
-                        <span>Agregar campo</span>
-                      </button>
+                        Agregar campo
+                      </Button>
                     </div>
                   </div>
                 </motion.div>

@@ -127,28 +127,34 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                 exit={{ opacity: 0, scale: 0.95, y: -10 }}
                                 className="absolute right-6 top-12 w-40 bg-white border border-gray-200 rounded-xl shadow-xl z-50 py-1 overflow-hidden"
                               >
-                                <button
+                                <Button
+                                  type="button"
+                                  variant="Tertiary"
+                                  size="m"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     onDuplicateAgent(flow.id);
                                     setOpenMenuId(null);
                                   }}
-                                  className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-all"
+                                  className="w-full !min-h-0 justify-start rounded-none px-4 py-2.5 text-sm font-normal text-fg-secondary hover:bg-bg-secondary"
+                                  iconLeft={<Copy className="w-4 h-4" />}
                                 >
-                                  <Copy className="w-4 h-4" />
-                                  <span>Duplicar</span>
-                                </button>
-                                <button
+                                  Duplicar
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="Destructive Tertiary"
+                                  size="m"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     onDeleteAgent(flow.id);
                                     setOpenMenuId(null);
                                   }}
-                                  className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-all"
+                                  className="w-full !min-h-0 justify-start rounded-none px-4 py-2.5 text-sm font-normal hover:bg-bg-status-error/10"
+                                  iconLeft={<Power className="w-4 h-4" />}
                                 >
-                                  <Power className="w-4 h-4" />
-                                  <span>Desactivar</span>
-                                </button>
+                                  Desactivar
+                                </Button>
                               </motion.div>
                             </>
                           )}

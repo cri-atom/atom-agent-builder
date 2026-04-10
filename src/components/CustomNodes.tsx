@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useFlowContext } from '../context/FlowContext';
+import { Button } from './Button';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -37,13 +38,20 @@ export const StartNode = memo(({ id, data, selected }: any) => {
             </button>
           ) : (
             <div className="bg-bg-primary border border-border-tertiary rounded-xl shadow-xl p-1 flex flex-col gap-1 animate-in fade-in zoom-in duration-200 min-w-[90px]">
-              <button 
+              <Button
+                type="button"
+                variant="Tertiary"
+                size="xs"
                 onClick={(e) => { e.stopPropagation(); onAddNode('agent', id); setShowMenu(false); }}
-                className="flex items-center gap-2 px-2 py-1.5 hover:bg-bg-secondary rounded-lg transition-all text-fg-tertiary hover:text-fg-primary group/item"
+                className="group/item w-full !min-h-0 justify-start rounded-lg border-0 px-2 py-1.5 font-normal shadow-none hover:bg-bg-secondary"
+                iconLeft={
+                  <Bot className="h-3.5 w-3.5 text-fg-tertiary transition-colors group-hover/item:text-primary" />
+                }
               >
-                <Bot className="w-3.5 h-3.5 text-fg-tertiary group-hover/item:text-primary transition-colors" />
-                <span className="label-small font-semibold text-fg-tertiary group-hover/item:text-fg-primary">Agente</span>
-              </button>
+                <span className="label-small font-semibold text-fg-tertiary transition-colors group-hover/item:text-fg-primary">
+                  Agente
+                </span>
+              </Button>
             </div>
           )}
         </div>
@@ -179,21 +187,35 @@ export const AgentNode = memo(({ id, data, selected }: any) => {
             exit={{ opacity: 0, scale: 0.9, y: 10 }}
             className="absolute -bottom-2 left-1/2 -translate-x-1/2 translate-y-full z-30 bg-bg-primary border border-border-tertiary rounded-xl shadow-xl p-1 flex flex-col gap-1 min-w-[90px]"
           >
-            <button 
+            <Button
+              type="button"
+              variant="Tertiary"
+              size="xs"
               onClick={(e) => { e.stopPropagation(); onAddNode('agent', id); setShowMenu(false); }}
-              className="flex items-center gap-2 px-2 py-1.5 hover:bg-bg-secondary rounded-lg transition-all text-fg-tertiary hover:text-fg-primary group/item"
+              className="group/item w-full !min-h-0 justify-start rounded-lg border-0 px-2 py-1.5 font-normal shadow-none hover:bg-bg-secondary"
+              iconLeft={
+                <Bot className="h-3.5 w-3.5 text-fg-tertiary transition-colors group-hover/item:text-primary" />
+              }
             >
-              <Bot className="w-3.5 h-3.5 text-fg-tertiary group-hover/item:text-primary transition-colors" />
-              <span className="label-small font-semibold text-fg-tertiary group-hover/item:text-fg-primary">Agente</span>
-            </button>
+              <span className="label-small font-semibold text-fg-tertiary transition-colors group-hover/item:text-fg-primary">
+                Agente
+              </span>
+            </Button>
             <div className="h-px bg-border-tertiary mx-1" />
-            <button 
+            <Button
+              type="button"
+              variant="Tertiary"
+              size="xs"
               onClick={(e) => { e.stopPropagation(); onAddNode('end', id); setShowMenu(false); }}
-              className="flex items-center gap-2 px-2 py-1.5 hover:bg-bg-secondary rounded-lg transition-all text-fg-tertiary hover:text-fg-primary group/item"
+              className="group/item w-full !min-h-0 justify-start rounded-lg border-0 px-2 py-1.5 font-normal shadow-none hover:bg-bg-secondary"
+              iconLeft={
+                <CheckCircle2 className="h-3.5 w-3.5 text-fg-tertiary transition-colors group-hover/item:text-fg-primary" />
+              }
             >
-              <CheckCircle2 className="w-3.5 h-3.5 text-fg-tertiary group-hover/item:text-fg-primary transition-colors" />
-              <span className="label-small font-semibold text-fg-tertiary group-hover/item:text-fg-primary">Fin</span>
-            </button>
+              <span className="label-small font-semibold text-fg-tertiary transition-colors group-hover/item:text-fg-primary">
+                Fin
+              </span>
+            </Button>
           </motion.div>
         )}
       </AnimatePresence>
