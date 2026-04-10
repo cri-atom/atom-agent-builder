@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Search, Plus, Trash2, Database, Wrench, MessageSquare, Layout, Phone, ChevronRight, Wand2, Send, Loader2, Sparkles, FileText, MoreVertical, FolderOpen } from 'lucide-react';
+import { X, Search, Plus, Trash2, Database, Wrench, MessageSquare, Layout, Phone, ChevronRight, Wand2, Send, Loader2, Sparkles, FileText, MoreVertical, FolderOpen, Lightbulb } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AgentNodeData, KnowledgeBaseDoc, Tool } from '../types';
 import { Button } from './Button';
+import { analyzePrompt, PromptAnalysis } from '../services/geminiService';
+import { AIFeedback } from './AIFeedback';
 
 interface PromptEditorModalProps {
   isOpen: boolean;
@@ -25,6 +27,24 @@ export const PromptEditorModal: React.FC<PromptEditorModalProps> = ({
   const [assistantInput, setAssistantInput] = useState('');
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [mentionMenu, setMentionMenu] = useState<{ isOpen: boolean; x: number; y: number; filter: string } | null>(null);
+  const [analysis, setAnalysis] = useState<PromptAnalysis | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  // Debounced analysis
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (data.instructions && data.instructions.length > 20) {
+        setIsAnalyzing(true);
+        const result = await analyzePrompt(data.instructions);
+        setAnalysis(result);
+        setIsAnalyzing(false);
+      } else {
+        setAnalysis(null);
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [data.instructions]);
 
   const responseFormats = data.responseFormats || [
     { id: 'buttons', name: 'Botones', enabled: false, condition: '' },
@@ -169,16 +189,48 @@ export const PromptEditorModal: React.FC<PromptEditorModalProps> = ({
             {/* Main Column: Instructions */}
             <div className="flex-1 p-8 overflow-y-auto bg-bg-secondary/30 relative">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="label font-bold text-fg-tertiary uppercase tracking-wider">Instrucciones del Prompt</h3>
+                <div className="flex items-center gap-3">
+                  <h3 className="label font-bold text-fg-tertiary uppercase tracking-wider">Instrucciones del Prompt</h3>
+                  <AIFeedback analysis={analysis} isAnalyzing={isAnalyzing} />
+                </div>
               </div>
               
               <div className="h-[calc(100%-3rem)] relative">
                 <textarea
                   value={data.instructions || ''}
                   onChange={handleInstructionsChange}
-                  className="w-full h-full bg-white border border-border-tertiary rounded-2xl p-6 body text-fg-primary focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all resize-none shadow-sm leading-relaxed"
+                  className={`w-full h-full bg-white border rounded-2xl p-6 body text-fg-primary focus:ring-4 focus:ring-primary/5 transition-all resize-none shadow-sm leading-relaxed ${
+                    analysis?.quality === 'high' ? 'border-green-200' : 
+                    analysis?.quality === 'medium' ? 'border-amber-200' :
+                    analysis?.quality === 'low' ? 'border-red-200' : 'border-border-tertiary'
+                  }`}
                   placeholder="Escribe aquí las instrucciones detalladas para el comportamiento del agente..."
                 />
+
+                <AnimatePresence>
+                  {analysis && analysis.suggestions.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      className="absolute -right-4 top-12 w-64 translate-x-full hidden xl:block"
+                    >
+                      <div className="bg-white border border-border-tertiary rounded-2xl p-4 shadow-xl">
+                        <div className="flex items-center gap-2 mb-3">
+                          <Lightbulb className="w-4 h-4 text-amber-500" />
+                          <span className="label-small font-bold text-fg-primary">Sugerencias de IA</span>
+                        </div>
+                        <ul className="space-y-2">
+                          {analysis.suggestions.map((suggestion, i) => (
+                            <li key={i} className="flex gap-2 text-[11px] leading-relaxed text-fg-secondary">
+                              <span className="text-primary mt-1">•</span>
+                              {suggestion}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 <AnimatePresence>
                   {mentionMenu?.isOpen && (

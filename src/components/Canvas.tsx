@@ -14,7 +14,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { 
   Save, Play, MessageSquare, Trash2, Copy, ZoomIn, ZoomOut, Maximize, 
-  ArrowLeft, AlertCircle, Bot, History, Rocket, Smartphone, MoreHorizontal, X, Globe 
+  ArrowLeft, AlertCircle, Bot, History, Rocket, Smartphone, MoreHorizontal, X, Globe, Sparkles 
 } from 'lucide-react';
 import { StartNode, AgentNode, EndNode } from './CustomNodes';
 import { CustomEdge } from './CustomEdge';
@@ -24,7 +24,9 @@ import { FlowProvider } from '../context/FlowContext';
 import { Button } from './Button';
 import { ChatSimulator } from './ChatSimulator';
 import { GlobalConfigPanel } from './GlobalConfigPanel';
+import { SmartSuggestions } from './SmartSuggestions';
 import { GlobalConfig } from '../types';
+import { getFlowSuggestions } from '../services/geminiService';
 
 const nodeTypes = {
   start: StartNode,
@@ -154,6 +156,20 @@ export const Canvas: React.FC<CanvasProps> = ({
   const [isPublishing, setIsPublishing] = useState(false);
   const [isChatSimulatorOpen, setIsChatSimulatorOpen] = useState(false);
   const [isGlobalConfigOpen, setIsGlobalConfigOpen] = useState(true);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchSuggestions = async () => {
+      const flowDesc = nodes.map(n => n.data.label).join(', ');
+      const newSuggestions = await getFlowSuggestions(flowDesc);
+      setSuggestions(newSuggestions);
+    };
+
+    if (nodes.length > 0) {
+      fetchSuggestions();
+    }
+  }, [nodes.length]);
 
   const handlePublish = async () => {
     setIsPublishing(true);
@@ -206,9 +222,28 @@ export const Canvas: React.FC<CanvasProps> = ({
           />
         </div>
         <div className="flex items-center gap-3">
-          {/* Top Publish button removed as requested */}
+          <Button
+            variant="Tertiary"
+            size="s"
+            onClick={() => setIsSuggestionsOpen(!isSuggestionsOpen)}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-all ${
+              isSuggestionsOpen ? 'bg-primary/10 border-primary text-primary' : 'bg-white border-border-tertiary text-fg-tertiary'
+            }`}
+          >
+            <Sparkles className={`w-4 h-4 ${isSuggestionsOpen ? 'animate-pulse' : ''}`} />
+            <span className="text-[10px] font-bold uppercase tracking-widest">Sugerencias IA</span>
+          </Button>
         </div>
       </div>
+
+      <SmartSuggestions 
+        suggestions={suggestions} 
+        isOpen={isSuggestionsOpen} 
+        onAddNode={(suggestion) => {
+          onAddNode('agent', nodes[nodes.length - 1]?.id || 'start-1');
+          // In a real app we'd use the suggestion to pre-fill the node
+        }} 
+      />
 
       <ReactFlow
         nodes={nodes}
