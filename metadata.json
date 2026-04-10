@@ -1,0 +1,5 @@
+{
+  "name": "Remix: ATOM Agent Builder",
+  "description": "Constructor visual de agentes inteligentes con capacidades multimedia y RAG.",
+  "requestFramePermissions": []
+}

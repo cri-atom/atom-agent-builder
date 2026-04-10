@@ -1,0 +1,289 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Brand (Identity) */
+  --color-primary: #FF6B00;
+  --color-secondary-orange: #FFF7ED;
+  --color-secondary-green: #F1FDF4;
+  --color-secondary-violet: #F5F3FF;
+  --color-secondary-blue: #EFF6FF;
+  --color-secondary-rose: #FFF2F2;
+
+  /* Bg (Backgrounds) */
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #FAFAFA;
+  --color-bg-tertiary: #F4F4F5;
+  --color-bg-quaternary: #E4E4E7;
+  --color-bg-disabled: #F4F4F5;
+  --color-bg-inverse-primary: #09090B;
+  --color-bg-inverse-secondary: #27272A;
+  --color-bg-inverse-tertiary: #52525C;
+  --color-bg-danger-primary: #FB2C37;
+  --color-bg-danger-secondary: transparent;
+
+  /* Status Bg */
+  --color-bg-status-info: #EFF6FF;
+  --color-bg-status-success: #ECFEF6;
+  --color-bg-status-warning: #FEFCE8;
+  --color-bg-status-error: #FEF3F3;
+
+  /* Interactive Bg */
+  --color-bg-interactive-primary-hovered: #09090B;
+  --color-bg-interactive-primary-pressed: #000000;
+  --color-bg-interactive-secondary-hovered: #FAFAFA;
+  --color-bg-interactive-secondary-pressed: #F4F4F5;
+  --color-bg-interactive-tertiary-hovered: #FAFAFA;
+  --color-bg-interactive-tertiary-pressed: #F4F4F5;
+
+  /* Accent Bg */
+  --color-bg-accent-ai-primary: #18181B;
+  --color-bg-accent-ai-secondary: #F4F4F5;
+  --color-bg-accent-ai-tertiary: #FDE7F4;
+
+  /* Fg (Foregrounds) */
+  --color-fg-brand: #FF6B00;
+  --color-fg-primary: #18181B;
+  --color-fg-secondary: #27272A;
+  --color-fg-tertiary: #52525C;
+  --color-fg-quaternary: #71717B;
+  --color-fg-disabled: #9F9FA9;
+  --color-fg-inverse-primary: #FAFAFA;
+  --color-fg-inverse-secondary: #E4E4E7;
+
+  /* Status Fg */
+  --color-fg-status-info: #193CB9;
+  --color-fg-status-success: #006145;
+  --color-fg-status-warning: #894B00;
+  --color-fg-status-error: #9E0812;
+
+  /* Accent Fg */
+  --color-fg-accent-ai-primary: #FAFAFA;
+  --color-fg-accent-ai-secondary: #27272A;
+  --color-fg-accent-ai-tertiary: #C7005C;
+
+  /* Border (Lines) */
+  --color-border-primary: #71717B;
+  --color-border-secondary: #D4D4D8;
+  --color-border-tertiary: #E4E4E7;
+  --color-border-disabled: #F4F4F5;
+  --color-border-brand: #FF6B00;
+
+  /* Status Border */
+  --color-border-status-info: #2C7FFF;
+  --color-border-status-success: #00C951;
+  --color-border-status-warning: #F1B100;
+  --color-border-status-error: #FB2C37;
+
+  /* ATOM Design System Tokens */
+  --xxs: 4px;
+  --xs: 8px;
+  --s: 12px;
+  --m: 16px;
+  --l: 24px;
+  --xl: 32px;
+  
+  --radius-s: 8px;
+  --radius-m: 12px;
+  --radius-pill: 9999px;
+  
+  --stroke-xs: 1px;
+  
+  --font-weight-medium: 500;
+  
+  --text-label-regular: 14px;
+  --text-body-regular: 16px;
+  --text-body-large: 18px;
+  
+  --duration-default: 0.6s;
+  --icon-s: 16px;
+
+  /* Button Variants */
+  --buttons-bg-primary-enabled: #18181B;
+  --buttons-fg-primary-enabled: #FFFFFF;
+  --buttons-bg-primary-hovered: #09090B;
+  --buttons-bg-primary-focused: #000000;
+  --buttons-bg-primary-pressed: #000000;
+  --buttons-shadow-focus: 0 0 0 4px rgba(24, 24, 27, 0.1);
+  --buttons-border-primary-focused: #18181B;
+
+  --buttons-bg-secondary-enabled: #FFFFFF;
+  --buttons-fg-secondary-enabled: #18181B;
+  --buttons-border-secondary-enabled: #D4D4D8;
+  --buttons-bg-secondary-hovered: #FAFAFA;
+  --buttons-bg-secondary-focused: #F4F4F5;
+  --buttons-bg-secondary-pressed: #E4E4E7;
+
+  --buttons-bg-tertiary-enabled: transparent;
+  --buttons-fg-tertiary-enabled: #52525C;
+  --buttons-bg-tertiary-hovered: #FAFAFA;
+  --buttons-bg-tertiary-focused: #F4F4F5;
+  --buttons-bg-tertiary-pressed: #E4E4E7;
+
+  --buttons-bg-danger-primary-enabled: #FB2C37;
+  --buttons-fg-danger-primary-enabled: #FFFFFF;
+  --buttons-bg-danger-primary-hovered: #E0242F;
+  --buttons-bg-danger-primary-focused: #C51F29;
+  --buttons-bg-danger-primary-pressed: #AA1A23;
+  --buttons-shadow-focus-danger: 0 0 0 4px rgba(251, 44, 55, 0.2);
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-bg-primary text-fg-primary antialiased;
+  }
+
+  /* ATOM Button Base Styles */
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-s);
+    border: var(--stroke-xs) solid transparent;
+    font-weight: var(--font-weight-medium);
+    gap: var(--xxs);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+    text-decoration: none;
+    --r: 20deg;
+    --y: 1100%;
+  }
+
+  .button:disabled {
+    background: var(--bg-disabled);
+    color: var(--fg-disabled);
+    cursor: not-allowed;
+  }
+
+  /* Sizes */
+  .button--xs { padding: var(--xxs) var(--xs); font-size: var(--text-label-regular); }
+  .button--s { padding: var(--xs) var(--s); font-size: var(--text-label-regular); }
+  .button--m { padding: var(--sm, 12px) var(--m); font-size: var(--text-label-regular); }
+  .button--l { padding: var(--m) var(--l); font-size: var(--text-body-regular); }
+  .button--xl { padding: var(--l) var(--xl); font-size: var(--text-body-large); }
+
+  /* Variants */
+  .button--primary {
+    background: var(--buttons-bg-primary-enabled);
+    color: var(--buttons-fg-primary-enabled);
+  }
+  .button--primary:hover:not(:disabled) { background: var(--buttons-bg-primary-hovered); }
+  .button--primary:focus:not(:disabled) { 
+    background: var(--buttons-bg-primary-focused);
+    box-shadow: var(--buttons-shadow-focus);
+    border-color: var(--buttons-border-primary-focused);
+  }
+  .button--primary:active:not(:disabled) { background: var(--buttons-bg-primary-pressed); }
+
+  .button--secondary {
+    background: var(--buttons-bg-secondary-enabled);
+    color: var(--buttons-fg-secondary-enabled);
+    border-color: var(--buttons-border-secondary-enabled);
+  }
+  .button--secondary:hover:not(:disabled) { background: var(--buttons-bg-secondary-hovered); }
+  .button--secondary:focus:not(:disabled) { 
+    background: var(--buttons-bg-secondary-focused);
+    box-shadow: var(--buttons-shadow-focus);
+  }
+  .button--secondary:active:not(:disabled) { background: var(--buttons-bg-secondary-pressed); }
+
+  .button--tertiary {
+    background: var(--buttons-bg-tertiary-enabled);
+    color: var(--buttons-fg-tertiary-enabled);
+  }
+  .button--tertiary:hover:not(:disabled) { background: var(--buttons-bg-tertiary-hovered); }
+  .button--tertiary:focus:not(:disabled) { 
+    background: var(--buttons-bg-tertiary-focused);
+    box-shadow: var(--buttons-shadow-focus);
+  }
+  .button--tertiary:active:not(:disabled) { background: var(--buttons-bg-tertiary-pressed); }
+
+  /* Animation Structure */
+  .button__label-wrap {
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+
+  .button__label {
+    grid-area: 1 / 1;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--xxs);
+    white-space: nowrap;
+    transform-origin: 50% var(--y, 1100%);
+    transform: rotate(0deg);
+  }
+
+  .button__label--clone {
+    transform: rotate(calc(var(--r) * -1));
+    opacity: 0;
+  }
+
+  /* Spinner */
+  @keyframes button-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .button__spinner {
+    width: var(--icon-s);
+    height: var(--icon-s);
+    border: var(--stroke-xs) solid currentColor;
+    border-radius: var(--radius-pill);
+    clip-path: polygon(50% 0%, 100% 0%, 100% 50%, 50% 50%);
+    animation: button-spin var(--duration-default) linear infinite;
+    flex-shrink: 0;
+  }
+
+  .button--loading {
+    pointer-events: none;
+  }
+
+  .button__loading-content {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--xxs);
+    white-space: nowrap;
+  }
+
+  /* Typography Scale - Refined for Minimalist UI */
+  .display-xl { @apply text-[56px] leading-tight font-bold tracking-tight; }
+  .display-l { @apply text-[48px] leading-tight font-bold tracking-tight; }
+  .display-m { @apply text-[40px] leading-tight font-bold tracking-tight; }
+  .display-s { @apply text-[32px] leading-tight font-bold tracking-tight; }
+  .hugetitle { @apply text-[28px] leading-tight font-bold; }
+  .h1 { @apply text-[24px] leading-tight font-bold; }
+  .h2 { @apply text-[20px] leading-tight font-bold; }
+  .h3 { @apply text-[18px] leading-tight font-semibold; }
+  .h4 { @apply text-[16px] leading-tight font-semibold; }
+  .heading { @apply text-[14px] leading-snug font-semibold uppercase tracking-wider; }
+  .body { @apply text-[14px] leading-relaxed; }
+  .caption { @apply text-[13px] leading-normal; }
+  .label { @apply text-[11px] leading-none font-medium uppercase tracking-wide; }
+  .label-small { @apply text-[9px] leading-none font-medium; }
+  .footnote { @apply text-[8px] leading-none; }
+}
+
+/* React Flow Customizations */
+.react-flow__node {
+  @apply !rounded-xl !border-none !shadow-none;
+}
+
+.react-flow__handle {
+  @apply !w-3 !h-3 !bg-bg-quaternary !border-2 !border-bg-primary;
+}
+
+.react-flow__edge-path {
+  @apply !stroke-border-secondary !stroke-[2px];
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  @apply !stroke-primary;
+}
