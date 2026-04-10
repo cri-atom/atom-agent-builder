@@ -1,0 +1,118 @@
+/* Layer 3 — Agentes list (Dashboard main content, Figma Main Content) */
+@layer components {
+  .dashboard-agents__card {
+    --dashboard-agents-card-shadow: 0 6px 14px 0 rgba(46, 33, 74, 0.08);
+    box-shadow: var(--dashboard-agents-card-shadow);
+  }
+
+  .dashboard-agents__table-scroll {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: auto;
+    background: var(--table-bg-surface);
+  }
+
+  .dashboard-agents .table--agents {
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  .dashboard-agents .table--agents .table__th--col-estado,
+  .dashboard-agents .table--agents .table__td--col-estado {
+    width: 5.875rem;
+    min-width: 5.875rem;
+    text-align: center;
+  }
+
+  .dashboard-agents .table--agents .table__th--col-fecha,
+  .dashboard-agents .table--agents .table__td--col-fecha {
+    width: 9.0625rem;
+    min-width: 9.0625rem;
+  }
+
+  .dashboard-agents .table--agents .table__th--col-usuario,
+  .dashboard-agents .table--agents .table__td--col-usuario {
+    width: 10rem;
+    min-width: 10rem;
+  }
+
+  .dashboard-agents .table--agents .table__th--col-acciones,
+  .dashboard-agents .table--agents .table__td--col-acciones {
+    width: 5.3125rem;
+    min-width: 5.3125rem;
+  }
+
+  /* Compact status pill (Figma ~10px medium) */
+  .dashboard-agents .table__tag {
+    padding: var(--spacing-xxs) var(--spacing-xs);
+    font-size: 0.625rem;
+    line-height: var(--line-height-label-small);
+  }
+
+  .dashboard-agents__pagination {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    min-height: 3rem;
+    padding: var(--spacing-s) var(--spacing-m);
+    border-top: var(--stroke-2xs) solid var(--table-border-row);
+    background: var(--color-bg-primary);
+    box-sizing: border-box;
+  }
+
+  .dashboard-agents__pagination-start {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-m);
+    justify-self: start;
+  }
+
+  .dashboard-agents__pagination-center {
+    justify-self: center;
+    text-align: center;
+  }
+
+  .dashboard-agents__pagination-end {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+    justify-self: end;
+  }
+
+  .dashboard-agents__page-size {
+    appearance: none;
+    box-sizing: border-box;
+    min-width: 4.125rem;
+    padding: var(--spacing-s) var(--spacing-sm);
+    padding-right: 2rem;
+    border-radius: var(--radius-s);
+    border: var(--stroke-xs) solid var(--color-border-secondary);
+    background: var(--color-bg-primary);
+    font-family: var(--font-family-content);
+    font-size: var(--font-size-label);
+    line-height: var(--line-height-label);
+    font-weight: var(--font-weight-regular);
+    color: var(--color-fg-tertiary);
+    cursor: pointer;
+  }
+
+  .dashboard-agents__page-size:focus-visible {
+    outline: var(--stroke-s) solid color-mix(in srgb, var(--color-primary) 35%, transparent);
+    outline-offset: 1px;
+  }
+
+  .dashboard-agents__page-size-wrap {
+    position: relative;
+  }
+
+  .dashboard-agents__page-size-chevron {
+    position: absolute;
+    right: var(--spacing-sm);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1rem;
+    height: 1rem;
+    color: var(--color-fg-tertiary);
+    pointer-events: none;
+  }
+}
