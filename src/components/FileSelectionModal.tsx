@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { X, Search, Upload, FileText, ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { KnowledgeBaseDoc } from '../types';
+import { Button } from './Button';
 
 interface FileSelectionModalProps {
   isOpen: boolean;
@@ -122,13 +123,15 @@ export const FileSelectionModal: React.FC<FileSelectionModalProps> = ({
                 onChange={handleFileChange} 
                 className="hidden" 
               />
-              <button 
+              <Button
+                type="button"
+                variant="Primary"
+                size="m"
                 onClick={handleUploadClick}
-                className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white label font-bold rounded-xl hover:bg-bg-interactive-primary-hovered transition-all shadow-lg shadow-primary/10"
+                iconLeft={<Upload className="w-4 h-4" />}
               >
-                <Upload className="w-4 h-4" />
                 Cargar archivo
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -210,19 +213,18 @@ export const FileSelectionModal: React.FC<FileSelectionModalProps> = ({
           </div>
 
           <div className="px-8 py-6 border-t border-border-tertiary bg-bg-secondary/30 flex justify-end gap-3 shrink-0">
-            <button 
-              onClick={onClose}
-              className="px-6 py-2.5 label font-bold text-fg-tertiary hover:bg-bg-tertiary rounded-xl transition-all"
-            >
+            <Button type="button" variant="Tertiary" size="m" onClick={onClose}>
               Cerrar
-            </button>
-            <button 
+            </Button>
+            <Button
+              type="button"
+              variant="Primary"
+              size="m"
               onClick={handleConfirm}
-              className="px-8 py-2.5 bg-primary text-white label font-bold rounded-xl hover:bg-bg-interactive-primary-hovered transition-all flex items-center gap-2 shadow-lg shadow-primary/10"
+              iconLeft={<Check className="w-4 h-4" />}
             >
-              <Check className="w-4 h-4" />
               Guardar selección
-            </button>
+            </Button>
           </div>
         </motion.div>
       </motion.div>

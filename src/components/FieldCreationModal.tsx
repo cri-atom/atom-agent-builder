@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { Button } from './Button';
 
 interface FieldCreationModalProps {
   isOpen: boolean;
@@ -128,23 +129,18 @@ export const FieldCreationModal: React.FC<FieldCreationModalProps> = ({
             </div>
 
             <div className="flex items-center justify-end gap-4 mt-10">
-              <button 
-                onClick={onClose}
-                className="px-6 py-2 label font-bold text-primary hover:bg-bg-secondary rounded-xl transition-all"
-              >
+              <Button type="button" variant="Tertiary" size="s" onClick={onClose}>
                 Cancelar
-              </button>
-              <button 
+              </Button>
+              <Button
+                type="button"
+                variant="Primary"
+                size="s"
                 onClick={handleCreate}
                 disabled={!name || !description}
-                className="px-8 py-2 label font-bold text-white rounded-xl disabled:cursor-not-allowed transition-all shadow-lg"
-                style={{ 
-                  backgroundColor: name && description ? '#FF6B00' : '#E0E0E0',
-                  boxShadow: name && description ? '0 4px 12px rgba(255, 107, 0, 0.2)' : 'none'
-                }}
               >
                 Crear
-              </button>
+              </Button>
             </div>
           </motion.div>
         </motion.div>

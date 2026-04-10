@@ -79,36 +79,53 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1 custom-scrollbar">
           {menuItems.map((item) => (
             <div key={item.id} className="space-y-1">
-              <button
+              <Button
+                type="button"
+                variant="Tertiary"
+                size="m"
                 onClick={() => onModuleChange(item.id)}
                 title={isCompact ? item.label : undefined}
                 className={cn(
-                  "w-full flex items-center px-3 py-2.5 rounded-lg transition-all group",
+                  "w-full group !min-h-0 px-3 py-2.5 rounded-lg font-normal",
                   isCompact ? "justify-center" : "justify-between",
                   activeModule === item.id || (item.id === 'campanas' && isCampanasActive)
-                    ? "bg-[#FF6B00]/10 text-[#FF6B00]" 
-                    : "text-[#4A4A4A] hover:bg-gray-50 hover:text-[#1A1A1A]"
+                    ? "bg-secondary-orange text-primary hover:bg-secondary-orange"
+                    : "text-fg-secondary hover:bg-bg-secondary hover:text-fg-primary"
                 )}
+                iconLeft={
+                  <item.icon
+                    className={cn(
+                      "w-5 h-5 shrink-0",
+                      activeModule === item.id || (item.id === 'campanas' && isCampanasActive)
+                        ? "text-primary"
+                        : "text-fg-tertiary group-hover:text-fg-secondary"
+                    )}
+                  />
+                }
+                iconRight={
+                  !isCompact && item.hasSubmenu ? (
+                    <ChevronRight
+                      className={cn(
+                        "w-4 h-4 text-fg-tertiary transition-transform",
+                        activeModule === item.id || (item.id === 'campanas' && isCampanasActive)
+                          ? "opacity-100"
+                          : "opacity-0 group-hover:opacity-100"
+                      )}
+                    />
+                  ) : undefined
+                }
               >
-                <div className="flex items-center gap-3">
-                  <item.icon className={cn(
-                    "w-5 h-5 shrink-0",
-                    activeModule === item.id || (item.id === 'campanas' && isCampanasActive) ? "text-[#FF6B00]" : "text-gray-400 group-hover:text-gray-600"
-                  )} />
-                  {!isCompact && <span className="text-sm font-medium">{item.label}</span>}
-                  {!isCompact && item.badge && (
-                    <span className="px-1.5 py-0.5 bg-[#F4F4F5] text-[#18181B] text-[10px] font-bold rounded uppercase">
-                      {item.badge}
-                    </span>
-                  )}
-                </div>
-                {!isCompact && item.hasSubmenu && (
-                  <ChevronRight className={cn(
-                    "w-4 h-4 text-gray-400 transition-transform",
-                    activeModule === item.id || (item.id === 'campanas' && isCampanasActive) ? "rotate-0" : "rotate-0 opacity-0 group-hover:opacity-100"
-                  )} />
+                {!isCompact && (
+                  <span className="flex items-center gap-3">
+                    <span className="text-sm font-medium">{item.label}</span>
+                    {item.badge && (
+                      <span className="px-1.5 py-0.5 bg-bg-tertiary text-fg-primary text-[10px] font-bold rounded uppercase">
+                        {item.badge}
+                      </span>
+                    )}
+                  </span>
                 )}
-              </button>
+              </Button>
             </div>
           ))}
         </nav>
@@ -153,27 +170,40 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           </div>
           <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1 custom-scrollbar">
             {campanasItem.subItems?.map((sub) => (
-              <button
+              <Button
                 key={sub.id}
+                type="button"
+                variant="Tertiary"
+                size="m"
                 onClick={() => onModuleChange(sub.id)}
                 className={cn(
-                  "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
+                  "w-full !min-h-0 justify-start gap-3 px-3 py-2.5 rounded-lg text-sm font-medium",
                   activeModule === sub.id || (sub.id === 'agentes' && activeModule === 'agentes')
-                    ? "text-[#FF6B00] bg-[#FF6B00]/10" 
-                    : "text-gray-500 hover:text-[#1A1A1A] hover:bg-gray-50"
+                    ? "text-primary bg-secondary-orange hover:bg-secondary-orange"
+                    : "text-fg-tertiary hover:text-fg-primary hover:bg-bg-secondary"
                 )}
+                iconLeft={
+                  sub.icon ? (
+                    <sub.icon
+                      className={cn(
+                        "w-4 h-4 shrink-0",
+                        activeModule === sub.id || (sub.id === 'agentes' && activeModule === 'agentes')
+                          ? "text-primary"
+                          : "text-fg-tertiary"
+                      )}
+                    />
+                  ) : undefined
+                }
               >
-                {sub.icon && <sub.icon className={cn(
-                  "w-4 h-4",
-                  activeModule === sub.id ? "text-[#FF6B00]" : "text-gray-400"
-                )} />}
-                <span className="flex-1 text-left">{sub.label}</span>
-                {sub.badge && (
-                  <span className="px-1.5 py-0.5 bg-[#F4F4F5] text-[#18181B] text-[8px] font-bold rounded uppercase">
-                    {sub.badge}
-                  </span>
-                )}
-              </button>
+                <span className="flex flex-1 items-center justify-between gap-2 text-left">
+                  <span>{sub.label}</span>
+                  {sub.badge && (
+                    <span className="px-1.5 py-0.5 bg-bg-tertiary text-fg-primary text-[8px] font-bold rounded uppercase shrink-0">
+                      {sub.badge}
+                    </span>
+                  )}
+                </span>
+              </Button>
             ))}
           </nav>
         </aside>

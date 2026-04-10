@@ -1,0 +1,198 @@
+@layer base {
+  .button {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-s);
+    border: var(--stroke-xs) solid transparent;
+    font-weight: var(--font-weight-medium);
+    gap: var(--spacing-s);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    position: relative;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+
+  .button--multiline {
+    white-space: normal;
+    align-items: flex-start;
+  }
+
+  .button:disabled {
+    background: var(--color-bg-disabled);
+    color: var(--color-fg-disabled);
+    cursor: not-allowed;
+  }
+
+  /* Figma atom-button heights: 24 / 32 / 40 / 48 / 56 px */
+  .button--xs {
+    min-height: 1.5rem;
+    padding: var(--spacing-xxs) var(--spacing-s);
+    font-size: 0.875rem;
+    line-height: 1.25;
+  }
+  .button--s {
+    min-height: 2rem;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.875rem;
+    line-height: 1.25;
+  }
+  .button--m {
+    min-height: 2.5rem;
+    padding: var(--spacing-sm) var(--spacing-m);
+    font-size: 0.875rem;
+    line-height: 1.25;
+  }
+  .button--l {
+    min-height: 3rem;
+    padding: var(--spacing-s) var(--spacing-l);
+    font-size: var(--font-size-label);
+    line-height: 1.25;
+  }
+  .button--xl {
+    min-height: 3.5rem;
+    padding: var(--spacing-m) var(--spacing-xl);
+    font-size: 1.125rem;
+    line-height: 1.25;
+  }
+
+  .button--primary {
+    background: var(--buttons-bg-primary-enabled);
+    color: var(--buttons-fg-primary-enabled);
+  }
+  .button--primary:hover:not(:disabled) {
+    background: var(--buttons-bg-primary-hovered);
+  }
+  .button--primary:focus:not(:disabled) {
+    background: var(--buttons-bg-primary-focused);
+    box-shadow: var(--buttons-shadow-focus);
+    border-color: var(--buttons-border-primary-focused);
+  }
+  .button--primary:active:not(:disabled) {
+    background: var(--buttons-bg-primary-pressed);
+  }
+
+  .button--secondary {
+    background: var(--buttons-bg-secondary-enabled);
+    color: var(--buttons-fg-secondary-enabled);
+    border-color: var(--buttons-border-secondary-enabled);
+  }
+  .button--secondary:hover:not(:disabled) {
+    background: var(--buttons-bg-secondary-hovered);
+  }
+  .button--secondary:focus:not(:disabled) {
+    background: var(--buttons-bg-secondary-focused);
+    box-shadow: var(--buttons-shadow-focus);
+  }
+  .button--secondary:active:not(:disabled) {
+    background: var(--buttons-bg-secondary-pressed);
+  }
+
+  .button--tertiary {
+    background: var(--buttons-bg-tertiary-enabled);
+    color: var(--buttons-fg-tertiary-enabled);
+  }
+  .button--tertiary:hover:not(:disabled) {
+    background: var(--buttons-bg-tertiary-hovered);
+  }
+  .button--tertiary:focus:not(:disabled) {
+    background: var(--buttons-bg-tertiary-focused);
+    box-shadow: var(--buttons-shadow-focus);
+  }
+  .button--tertiary:active:not(:disabled) {
+    background: var(--buttons-bg-tertiary-pressed);
+  }
+
+  .button--destructive-primary {
+    background: var(--buttons-bg-danger-primary-enabled);
+    color: var(--buttons-fg-danger-primary-enabled);
+  }
+  .button--destructive-primary:hover:not(:disabled) {
+    background: var(--buttons-bg-danger-primary-hovered);
+  }
+  .button--destructive-primary:focus:not(:disabled) {
+    background: var(--buttons-bg-danger-primary-focused);
+    box-shadow: var(--buttons-shadow-focus-danger);
+  }
+  .button--destructive-primary:active:not(:disabled) {
+    background: var(--buttons-bg-danger-primary-pressed);
+  }
+
+  .button--destructive-secondary {
+    background: var(--buttons-bg-secondary-enabled);
+    color: var(--color-fg-interactive-danger-secondary-enabled);
+    border-color: var(--color-border-interactive-danger-secondary-enabled);
+  }
+  .button--destructive-secondary:hover:not(:disabled) {
+    background: var(--buttons-bg-secondary-hovered);
+    color: var(--color-fg-interactive-danger-secondary-hovered);
+    border-color: var(--color-border-interactive-danger-secondary-hovered);
+  }
+  .button--destructive-secondary:focus:not(:disabled) {
+    background: var(--buttons-bg-secondary-focused);
+    color: var(--color-fg-interactive-danger-secondary-pressed);
+    box-shadow: var(--buttons-shadow-focus-danger);
+    border-color: var(--color-border-interactive-danger-secondary-focused);
+  }
+  .button--destructive-secondary:active:not(:disabled) {
+    background: var(--buttons-bg-secondary-pressed);
+    color: var(--color-fg-interactive-danger-secondary-pressed);
+  }
+
+  .button--destructive-tertiary {
+    background: transparent;
+    color: var(--color-fg-interactive-danger-secondary-enabled);
+  }
+  .button--destructive-tertiary:hover:not(:disabled) {
+    background: var(--buttons-bg-tertiary-hovered);
+    color: var(--color-fg-interactive-danger-secondary-hovered);
+  }
+  .button--destructive-tertiary:focus:not(:disabled) {
+    background: var(--buttons-bg-tertiary-focused);
+    color: var(--color-fg-interactive-danger-secondary-pressed);
+    box-shadow: var(--buttons-shadow-focus-danger);
+  }
+  .button--destructive-tertiary:active:not(:disabled) {
+    background: var(--buttons-bg-tertiary-pressed);
+    color: var(--color-fg-interactive-danger-secondary-pressed);
+  }
+
+  .button__label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-s);
+    white-space: nowrap;
+  }
+
+  @keyframes button-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .button__spinner {
+    width: var(--icon-s);
+    height: var(--icon-s);
+    border: var(--stroke-xs) solid currentColor;
+    border-radius: var(--radius-pill);
+    clip-path: polygon(50% 0%, 100% 0%, 100% 50%, 50% 50%);
+    animation: button-spin var(--duration-default) linear infinite;
+    flex-shrink: 0;
+  }
+
+  .button--loading {
+    pointer-events: none;
+  }
+
+  .button__loading-content {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-s);
+    white-space: nowrap;
+  }
+}

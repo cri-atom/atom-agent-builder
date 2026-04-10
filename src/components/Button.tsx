@@ -36,9 +36,6 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
     ...props 
   }, ref) => {
     const isLink = !!href;
-    const Tag = isLink ? 'a' : 'button';
-    
-    const variantClass = variant.toLowerCase().replace(' ', '--');
     const sizeClass = `button--${size}`;
     
     const baseClasses = cn(
@@ -53,23 +50,14 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
       <>
         {loading ? (
           <span className="button__loading-content">
-            <span className="button__loading-text" data-shimmer>Cargando...</span>
+            <span className="button__loading-text">Cargando...</span>
             <span className="button__spinner" data-button-spinner></span>
           </span>
         ) : (
-          <span className="button__label-wrap">
-            {/* Original label */}
-            <span className="button__label" data-button-label>
-              {iconLeft && <span className="button__icon" data-icon-left>{iconLeft}</span>}
-              {children}
-              {iconRight && <span className="button__icon" data-icon-right>{iconRight}</span>}
-            </span>
-            {/* Clone label (for animation, hidden by default) */}
-            <span className="button__label button__label--clone" data-button-label-clone aria-hidden="true">
-              {iconLeft && <span className="button__icon">{iconLeft}</span>}
-              {children}
-              {iconRight && <span className="button__icon">{iconRight}</span>}
-            </span>
+          <span className="button__label">
+            {iconLeft && <span className="button__icon">{iconLeft}</span>}
+            {children}
+            {iconRight && <span className="button__icon">{iconRight}</span>}
           </span>
         )}
       </>
@@ -82,7 +70,6 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
           href={href}
           className={baseClasses}
           data-button
-          data-hover-rotate
           {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
         >
           {content}
@@ -97,7 +84,6 @@ export const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, Bu
         disabled={disabled || loading}
         className={baseClasses}
         data-button
-        data-hover-rotate
         aria-disabled={disabled || loading}
         aria-busy={loading}
         {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}

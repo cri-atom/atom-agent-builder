@@ -9,6 +9,8 @@
 @import "./styles/tokens/radius/radius.css";
 @import "./styles/tokens/spacing/spacing.css";
 @import "./styles/tokens/breakpoints/breakpoints.css";
+@import "./styles/components/button.css";
+@import "./styles/components/button-classes.css";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -109,157 +111,11 @@
   
   --duration-default: 0.6s;
   --icon-s: 16px;
-
-  /* Button Variants */
-  --buttons-bg-primary-enabled: #18181B;
-  --buttons-fg-primary-enabled: #FFFFFF;
-  --buttons-bg-primary-hovered: #09090B;
-  --buttons-bg-primary-focused: #000000;
-  --buttons-bg-primary-pressed: #000000;
-  --buttons-shadow-focus: 0 0 0 4px rgba(24, 24, 27, 0.1);
-  --buttons-border-primary-focused: #18181B;
-
-  --buttons-bg-secondary-enabled: #FFFFFF;
-  --buttons-fg-secondary-enabled: #18181B;
-  --buttons-border-secondary-enabled: #D4D4D8;
-  --buttons-bg-secondary-hovered: #FAFAFA;
-  --buttons-bg-secondary-focused: #F4F4F5;
-  --buttons-bg-secondary-pressed: #E4E4E7;
-
-  --buttons-bg-tertiary-enabled: transparent;
-  --buttons-fg-tertiary-enabled: #52525C;
-  --buttons-bg-tertiary-hovered: #FAFAFA;
-  --buttons-bg-tertiary-focused: #F4F4F5;
-  --buttons-bg-tertiary-pressed: #E4E4E7;
-
-  --buttons-bg-danger-primary-enabled: #FB2C37;
-  --buttons-fg-danger-primary-enabled: #FFFFFF;
-  --buttons-bg-danger-primary-hovered: #E0242F;
-  --buttons-bg-danger-primary-focused: #C51F29;
-  --buttons-bg-danger-primary-pressed: #AA1A23;
-  --buttons-shadow-focus-danger: 0 0 0 4px rgba(251, 44, 55, 0.2);
 }
 
 @layer base {
   body {
     @apply font-sans bg-bg-primary text-fg-primary antialiased;
-  }
-
-  /* ATOM Button Base Styles */
-  .button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--radius-s);
-    border: var(--stroke-xs) solid transparent;
-    font-weight: var(--font-weight-medium);
-    gap: var(--xxs);
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
-    position: relative;
-    overflow: hidden;
-    white-space: nowrap;
-    text-decoration: none;
-    --r: 20deg;
-    --y: 1100%;
-  }
-
-  .button:disabled {
-    background: var(--bg-disabled);
-    color: var(--fg-disabled);
-    cursor: not-allowed;
-  }
-
-  /* Sizes */
-  .button--xs { padding: var(--xxs) var(--xs); font-size: var(--text-label-regular); }
-  .button--s { padding: var(--xs) var(--s); font-size: var(--text-label-regular); }
-  .button--m { padding: var(--sm, 12px) var(--m); font-size: var(--text-label-regular); }
-  .button--l { padding: var(--m) var(--l); font-size: var(--text-body-regular); }
-  .button--xl { padding: var(--l) var(--xl); font-size: var(--text-body-large); }
-
-  /* Variants */
-  .button--primary {
-    background: var(--buttons-bg-primary-enabled);
-    color: var(--buttons-fg-primary-enabled);
-  }
-  .button--primary:hover:not(:disabled) { background: var(--buttons-bg-primary-hovered); }
-  .button--primary:focus:not(:disabled) { 
-    background: var(--buttons-bg-primary-focused);
-    box-shadow: var(--buttons-shadow-focus);
-    border-color: var(--buttons-border-primary-focused);
-  }
-  .button--primary:active:not(:disabled) { background: var(--buttons-bg-primary-pressed); }
-
-  .button--secondary {
-    background: var(--buttons-bg-secondary-enabled);
-    color: var(--buttons-fg-secondary-enabled);
-    border-color: var(--buttons-border-secondary-enabled);
-  }
-  .button--secondary:hover:not(:disabled) { background: var(--buttons-bg-secondary-hovered); }
-  .button--secondary:focus:not(:disabled) { 
-    background: var(--buttons-bg-secondary-focused);
-    box-shadow: var(--buttons-shadow-focus);
-  }
-  .button--secondary:active:not(:disabled) { background: var(--buttons-bg-secondary-pressed); }
-
-  .button--tertiary {
-    background: var(--buttons-bg-tertiary-enabled);
-    color: var(--buttons-fg-tertiary-enabled);
-  }
-  .button--tertiary:hover:not(:disabled) { background: var(--buttons-bg-tertiary-hovered); }
-  .button--tertiary:focus:not(:disabled) { 
-    background: var(--buttons-bg-tertiary-focused);
-    box-shadow: var(--buttons-shadow-focus);
-  }
-  .button--tertiary:active:not(:disabled) { background: var(--buttons-bg-tertiary-pressed); }
-
-  /* Animation Structure */
-  .button__label-wrap {
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-  }
-
-  .button__label {
-    grid-area: 1 / 1;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--xxs);
-    white-space: nowrap;
-    transform-origin: 50% var(--y, 1100%);
-    transform: rotate(0deg);
-  }
-
-  .button__label--clone {
-    transform: rotate(calc(var(--r) * -1));
-    opacity: 0;
-  }
-
-  /* Spinner */
-  @keyframes button-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-
-  .button__spinner {
-    width: var(--icon-s);
-    height: var(--icon-s);
-    border: var(--stroke-xs) solid currentColor;
-    border-radius: var(--radius-pill);
-    clip-path: polygon(50% 0%, 100% 0%, 100% 50%, 50% 50%);
-    animation: button-spin var(--duration-default) linear infinite;
-    flex-shrink: 0;
-  }
-
-  .button--loading {
-    pointer-events: none;
-  }
-
-  .button__loading-content {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--xxs);
-    white-space: nowrap;
   }
 
   /* Typography Scale - Refined for Minimalist UI */

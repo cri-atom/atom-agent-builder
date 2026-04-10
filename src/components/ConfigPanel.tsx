@@ -194,10 +194,13 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
             { id: 'knowledge', label: 'Base de conocimiento' },
             { id: 'tools', label: 'Herramientas' },
           ].map((tab) => (
-            <button
+            <Button
               key={tab.id}
+              type="button"
+              variant="Tertiary"
+              size="m"
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 py-3 label font-semibold uppercase transition-all relative text-[10px] tracking-wider ${
+              className={`relative flex-1 rounded-none border-0 py-3 shadow-none label font-semibold uppercase text-[10px] tracking-wider ${
                 activeTab === tab.id ? 'text-primary' : 'text-fg-tertiary hover:text-fg-primary'
               }`}
             >
@@ -208,7 +211,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
                 />
               )}
-            </button>
+            </Button>
           ))}
         </div>
       )}
@@ -227,12 +230,11 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 <div className="flex items-center justify-between">
                   <label className="label text-fg-tertiary">Objetivo de la conversación</label>
                   <div className="flex items-center gap-2">
-                    <Button 
+                    <Button
                       variant="Tertiary"
                       size="xs"
                       onClick={onOpenPromptEditor}
                       iconLeft={<Wand2 size={12} />}
-                      className="bg-[#8B5CF6] text-white hover:bg-[#7C3AED] border-none"
                     >
                       Asistente
                     </Button>
@@ -274,8 +276,11 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                           data.tools
                             .filter((t: Tool) => t.name.toLowerCase().includes(mentionMenu.filter))
                             .map((tool: Tool) => (
-                              <button
+                              <Button
                                 key={tool.id}
+                                type="button"
+                                variant="Tertiary"
+                                size="s"
                                 onClick={() => {
                                   const value = data.instructions || '';
                                   const lastAt = value.lastIndexOf('@');
@@ -283,13 +288,15 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                                   handleInputChange('instructions', newValue);
                                   setMentionMenu(null);
                                 }}
-                                className="w-full flex items-center gap-3 px-3 py-2 hover:bg-bg-secondary rounded-lg transition-all text-left group"
+                                className="group w-full !min-h-0 justify-start rounded-lg border-0 px-3 py-2 font-normal shadow-none hover:bg-bg-secondary"
+                                iconLeft={
+                                  <div className="rounded-md bg-bg-tertiary p-1.5 transition-colors group-hover:bg-white">
+                                    <Wrench className="h-3.5 w-3.5 text-fg-tertiary" />
+                                  </div>
+                                }
                               >
-                                <div className="p-1.5 bg-bg-tertiary rounded-md group-hover:bg-white transition-colors">
-                                  <Wrench className="w-3.5 h-3.5 text-fg-tertiary" />
-                                </div>
                                 <span className="label font-semibold text-fg-primary">{tool.name}</span>
-                              </button>
+                              </Button>
                             ))
                         ) : (
                           <div className="p-4 text-center">
@@ -303,20 +310,27 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               </div>
 
               <div className="pt-4 border-t border-border-tertiary">
-                <button 
+                <Button
+                  type="button"
+                  variant="Tertiary"
+                  size="m"
                   onClick={() => setIsSaveFieldsOpen(!isSaveFieldsOpen)}
-                  className="w-full flex items-center justify-between group"
+                  className="group w-full !min-h-0 justify-between rounded-none border-0 p-0 font-normal shadow-none"
+                  iconLeft={
+                    <Save className="h-4 w-4 shrink-0 text-fg-tertiary transition-colors group-hover:text-primary" />
+                  }
+                  iconRight={
+                    isSaveFieldsOpen ? (
+                      <ChevronDown className="h-4 w-4 shrink-0 text-fg-tertiary" />
+                    ) : (
+                      <ChevronRight className="h-4 w-4 shrink-0 text-fg-tertiary" />
+                    )
+                  }
                 >
-                  <div className="flex items-center gap-2">
-                    <Save className="w-4 h-4 text-fg-tertiary group-hover:text-primary transition-colors" />
-                    <p className="label text-fg-tertiary uppercase group-hover:text-fg-primary transition-colors font-bold">Consultar campos de información</p>
-                  </div>
-                  {isSaveFieldsOpen ? (
-                    <ChevronDown className="w-4 h-4 text-fg-tertiary" />
-                  ) : (
-                    <ChevronRight className="w-4 h-4 text-fg-tertiary" />
-                  )}
-                </button>
+                  <span className="label font-bold uppercase text-fg-tertiary transition-colors group-hover:text-fg-primary">
+                    Consultar campos de información
+                  </span>
+                </Button>
 
                 <AnimatePresence>
                   {isSaveFieldsOpen && (
@@ -341,7 +355,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
 
                         <div className="flex items-center gap-3 px-1">
-                          <button 
+                          <Button
+                            type="button"
+                            variant="Tertiary"
+                            size="s"
                             onClick={() => {
                               const allRequired = data.saveFields?.every((f: SaveField) => f.type === 'required');
                               const newFields = data.saveFields?.map((f: SaveField) => ({
@@ -350,15 +367,17 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                               }));
                               handleInputChange('saveFields', newFields || []);
                             }}
-                            className="flex items-center gap-2 group"
+                            className="group border-0 p-0 font-normal shadow-none hover:bg-transparent"
+                            iconLeft={
+                              data.saveFields?.length > 0 && data.saveFields?.every((f: SaveField) => f.type === 'required') ? (
+                                <CheckSquare className="h-5 w-5 text-primary" />
+                              ) : (
+                                <Square className="h-5 w-5 text-fg-tertiary transition-colors group-hover:text-primary" />
+                              )
+                            }
                           >
-                            {data.saveFields?.length > 0 && data.saveFields?.every((f: SaveField) => f.type === 'required') ? (
-                              <CheckSquare className="w-5 h-5 text-primary" />
-                            ) : (
-                              <Square className="w-5 h-5 text-fg-tertiary group-hover:text-primary transition-colors" />
-                            )}
                             <span className="label text-fg-primary">Seleccionar todos</span>
-                          </button>
+                          </Button>
                         </div>
 
                         {/* Fields List */}
@@ -374,13 +393,16 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                           {data.saveFields?.map((field: SaveField) => (
                             <div key={field.id} className="flex items-center gap-3">
                               <div className="flex-1 relative">
-                                <button
+                                <Button
+                                  type="button"
+                                  variant="Secondary"
+                                  size="m"
                                   onClick={() => setIsFieldDropdownOpen(field.id)}
-                                  className="w-full flex items-center justify-between px-4 py-2.5 bg-white border border-border-tertiary rounded-xl label text-fg-primary hover:border-primary/50 transition-all text-left"
+                                  className="w-full justify-between rounded-xl border-border-tertiary bg-white font-normal shadow-none label text-fg-primary hover:border-primary/50"
+                                  iconRight={<ChevronDown className="h-4 w-4 shrink-0 text-fg-tertiary" />}
                                 >
                                   <span className="truncate">{field.label}</span>
-                                  <ChevronDown className="w-4 h-4 text-fg-tertiary flex-shrink-0" />
-                                </button>
+                                </Button>
 
                                 <AnimatePresence>
                                   {isFieldDropdownOpen === field.id && (
@@ -405,8 +427,11 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                                         </div>
                                         <div className="max-h-48 overflow-y-auto">
                                           {['Nombre', 'Apellido', 'Email', 'Teléfono', 'Empresa', 'Dirección', 'Ciudad', 'País'].filter(f => f.toLowerCase().includes(fieldSearch.toLowerCase())).map(f => (
-                                            <button
+                                            <Button
                                               key={f}
+                                              type="button"
+                                              variant="Tertiary"
+                                              size="s"
                                               onClick={() => {
                                                 const newFields = data.saveFields.map((sf: SaveField) => 
                                                   sf.id === field.id ? { ...sf, label: f } : sf
@@ -415,10 +440,10 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                                                 setIsFieldDropdownOpen(null);
                                                 setFieldSearch('');
                                               }}
-                                              className="w-full text-left px-4 py-2.5 label text-fg-primary hover:bg-bg-secondary transition-all"
+                                              className="w-full justify-start rounded-none border-0 px-4 py-2.5 font-normal shadow-none label text-fg-primary hover:bg-bg-secondary"
                                             >
                                               {f}
-                                            </button>
+                                            </Button>
                                           ))}
                                         </div>
                                       </motion.div>
@@ -463,7 +488,6 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                             size="s"
                             onClick={() => setIsFieldModalOpen(true)}
                             iconLeft={<Plus size={14} />}
-                            className="uppercase font-bold text-[10px]"
                           >
                             Crear campo
                           </Button>
@@ -481,7 +505,6 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                               handleInputChange('saveFields', [...(data.saveFields || []), newField]);
                             }}
                             iconLeft={<Plus size={14} />}
-                            className="uppercase font-bold text-[10px]"
                           >
                             Agregar campo
                           </Button>
@@ -493,20 +516,27 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               </div>
 
               <div className="pt-4 border-t border-border-tertiary">
-                <button 
+                <Button
+                  type="button"
+                  variant="Tertiary"
+                  size="m"
                   onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
-                  className="w-full flex items-center justify-between group"
+                  className="group w-full !min-h-0 justify-between rounded-none border-0 p-0 font-normal shadow-none"
+                  iconLeft={
+                    <Settings className="h-4 w-4 shrink-0 text-fg-tertiary transition-colors group-hover:text-primary" />
+                  }
+                  iconRight={
+                    isAdvancedOpen ? (
+                      <ChevronDown className="h-4 w-4 shrink-0 text-fg-tertiary" />
+                    ) : (
+                      <ChevronRight className="h-4 w-4 shrink-0 text-fg-tertiary" />
+                    )
+                  }
                 >
-                  <div className="flex items-center gap-2">
-                    <Settings className="w-4 h-4 text-fg-tertiary group-hover:text-primary transition-colors" />
-                    <p className="label text-fg-tertiary uppercase group-hover:text-fg-primary transition-colors">Configuración avanzada</p>
-                  </div>
-                  {isAdvancedOpen ? (
-                    <ChevronDown className="w-4 h-4 text-fg-tertiary" />
-                  ) : (
-                    <ChevronRight className="w-4 h-4 text-fg-tertiary" />
-                  )}
-                </button>
+                  <span className="label uppercase text-fg-tertiary transition-colors group-hover:text-fg-primary">
+                    Configuración avanzada
+                  </span>
+                </Button>
                 
                 <AnimatePresence>
                   {isAdvancedOpen && (
@@ -557,7 +587,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   onClick={() => setIsFileModalOpen(true)}
                   variant="Primary"
                   size="m"
-                  className="w-full py-3 shadow-sm"
+                  className="w-full"
                   iconLeft={<Plus size={16} />}
                 >
                   Seleccionar o cargar archivo
@@ -630,18 +660,27 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
                   {data.dynamicTableId && (
                     <div className="pt-2">
-                      <button 
+                      <Button
+                        type="button"
+                        variant="Tertiary"
+                        size="s"
                         onClick={() => setIsSqlAdvancedOpen(!isSqlAdvancedOpen)}
-                        className="flex items-center gap-2 group"
+                        className="group !min-h-0 border-0 p-0 font-normal shadow-none"
+                        iconLeft={
+                          <Settings className="h-3.5 w-3.5 shrink-0 text-fg-tertiary transition-colors group-hover:text-primary" />
+                        }
+                        iconRight={
+                          isSqlAdvancedOpen ? (
+                            <ChevronDown className="h-3 w-3 shrink-0 text-fg-tertiary" />
+                          ) : (
+                            <ChevronRight className="h-3 w-3 shrink-0 text-fg-tertiary" />
+                          )
+                        }
                       >
-                        <Settings className="w-3.5 h-3.5 text-fg-tertiary group-hover:text-primary transition-colors" />
-                        <p className="label-small text-fg-tertiary uppercase group-hover:text-fg-primary transition-colors">Configuración avanzada</p>
-                        {isSqlAdvancedOpen ? (
-                          <ChevronDown className="w-3 h-3 text-fg-tertiary" />
-                        ) : (
-                          <ChevronRight className="w-3 h-3 text-fg-tertiary" />
-                        )}
-                      </button>
+                        <span className="label-small uppercase text-fg-tertiary transition-colors group-hover:text-fg-primary">
+                          Configuración avanzada
+                        </span>
+                      </Button>
                       
                       <AnimatePresence>
                         {isSqlAdvancedOpen && (
@@ -694,7 +733,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   onClick={() => setIsToolModalOpen(true)}
                   variant="Primary"
                   size="m"
-                  className="w-full py-3 shadow-sm"
+                  className="w-full"
                   iconLeft={<Plus size={16} />}
                 >
                   Añadir Integración
@@ -731,7 +770,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   onClick={() => setIsAddingHttpTool(true)}
                   variant="Primary"
                   size="m"
-                  className="w-full py-3 shadow-sm"
+                  className="w-full"
                   iconLeft={<Plus size={16} />}
                 >
                   Añadir Petición HTTP

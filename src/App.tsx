@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
+import './lib/animations';
 import { Node, Edge, MarkerType } from 'reactflow';
 import { DashboardLayout } from './components/DashboardLayout';
 import { Dashboard } from './components/Dashboard';
@@ -14,7 +15,6 @@ import { GlobalConfigPanel } from './components/GlobalConfigPanel';
 import { PromptEditorModal } from './components/PromptEditorModal';
 import { Flow, GlobalConfig } from './types';
 import { AnimatePresence } from 'motion/react';
-import { initRotateClones, initRotateCalc, initHoverRotate } from './lib/animations';
 
 const INITIAL_FLOWS: Flow[] = [
   {
@@ -142,19 +142,6 @@ export default function App() {
     pipelineType: 'venta',
     saveFields: [],
   };
-
-  useEffect(() => {
-    // ATOM Button Animation Initialization
-    const cleanupClones = initRotateClones();
-    const cleanupCalc = initRotateCalc();
-    const cleanupHover = initHoverRotate();
-
-    return () => {
-      cleanupClones();
-      cleanupCalc();
-      cleanupHover();
-    };
-  }, []);
 
   const currentFlow = useMemo(() => 
     flows.find(f => f.id === currentFlowId), 

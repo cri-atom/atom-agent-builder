@@ -123,16 +123,21 @@ export const HttpRequestModal: React.FC<HttpRequestModalProps> = ({
 
               {/* Info Section */}
               <div className="border border-border-tertiary rounded-2xl overflow-hidden">
-                <button 
+                <Button
+                  type="button"
+                  variant="Tertiary"
+                  size="l"
                   onClick={() => setIsInfoOpen(!isInfoOpen)}
-                  className="w-full px-5 py-4 flex items-center justify-between bg-secondary-blue/30 hover:bg-secondary-blue/50 transition-all text-left"
+                  className="w-full !min-h-0 justify-between rounded-none border-0 bg-secondary-blue/30 px-5 py-4 text-left font-normal text-fg-status-info hover:bg-secondary-blue/50"
+                  iconLeft={<Info className="w-5 h-5 shrink-0 text-fg-status-info" />}
+                  iconRight={
+                    <ChevronDown
+                      className={`w-5 h-5 shrink-0 text-fg-status-info transition-transform ${isInfoOpen ? 'rotate-180' : ''}`}
+                    />
+                  }
                 >
-                  <div className="flex items-center gap-3 text-fg-status-info">
-                    <Info className="w-5 h-5" />
-                    <span className="h4 font-semibold">Conoce la petición HTTP</span>
-                  </div>
-                  <ChevronDown className={`w-5 h-5 text-fg-status-info transition-transform ${isInfoOpen ? 'rotate-180' : ''}`} />
-                </button>
+                  <span className="h4 flex-1 text-left font-semibold text-fg-status-info">Conoce la petición HTTP</span>
+                </Button>
                 <AnimatePresence>
                   {isInfoOpen && (
                     <motion.div
@@ -188,10 +193,16 @@ export const HttpRequestModal: React.FC<HttpRequestModalProps> = ({
                   <p className="footnote text-fg-tertiary">Dirección web donde enviar la petición</p>
                 </div>
 
-                <button className="w-full py-4 bg-bg-quaternary/50 border-none text-fg-tertiary rounded-2xl flex items-center justify-center gap-2 label font-bold cursor-not-allowed transition-all">
-                  <Play className="w-4 h-4 fill-current" />
+                <Button
+                  type="button"
+                  variant="Primary"
+                  size="l"
+                  disabled
+                  className="w-full"
+                  iconLeft={<Play className="w-4 h-4 fill-current" />}
+                >
                   Probar petición
-                </button>
+                </Button>
               </div>
 
               {/* Toggles */}
@@ -215,13 +226,20 @@ export const HttpRequestModal: React.FC<HttpRequestModalProps> = ({
 
               {/* Advanced Config */}
               <div className="space-y-4">
-                <button 
+                <Button
+                  type="button"
+                  variant="Tertiary"
+                  size="m"
                   onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
-                  className="w-full flex items-center justify-between group py-2"
+                  className="w-full !min-h-0 justify-between rounded-none border-0 py-2 font-normal shadow-none"
+                  iconRight={
+                    <ChevronDown
+                      className={`w-6 h-6 shrink-0 text-fg-tertiary transition-transform ${isAdvancedOpen ? 'rotate-180' : ''}`}
+                    />
+                  }
                 >
-                  <h3 className="h3 text-fg-primary">Configuraciones avanzadas</h3>
-                  <ChevronDown className={`w-6 h-6 text-fg-tertiary transition-transform ${isAdvancedOpen ? 'rotate-180' : ''}`} />
-                </button>
+                  <span className="h3 text-fg-primary">Configuraciones avanzadas</span>
+                </Button>
 
                 <AnimatePresence>
                   {isAdvancedOpen && (

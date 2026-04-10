@@ -4,6 +4,7 @@ import { X, Search, ChevronLeft, ChevronRight, Link2, Check, ArrowLeft, Wrench, 
 import { Toolkit, Tool } from '../types';
 
 import { HttpRequestModal } from './HttpRequestModal';
+import { Button } from './Button';
 
 interface ToolSelectionModalProps {
   isOpen: boolean;
@@ -145,19 +146,24 @@ export const ToolSelectionModal: React.FC<ToolSelectionModalProps> = ({
                 <div className="space-y-3">
                   {filteredToolkits.length > 0 ? (
                     filteredToolkits.map((toolkit) => (
-                      <button
+                      <Button
                         key={toolkit.id}
+                        type="button"
+                        variant="Secondary"
+                        size="l"
                         onClick={() => handleToolkitSelect(toolkit)}
-                        className="w-full flex items-center gap-4 p-4 border border-border-tertiary rounded-2xl hover:bg-bg-secondary transition-all text-left group"
+                        className="group w-full !h-auto !min-h-0 justify-start gap-4 rounded-2xl border-border-tertiary p-4 text-left font-normal shadow-none hover:bg-bg-secondary"
+                        iconLeft={
+                          <div className="rounded-xl bg-bg-tertiary p-2 transition-all group-hover:bg-bg-primary">
+                            {getIcon(toolkit.icon)}
+                          </div>
+                        }
                       >
-                        <div className="p-2 bg-bg-tertiary rounded-xl group-hover:bg-bg-primary transition-all">
-                          {getIcon(toolkit.icon)}
-                        </div>
                         <div>
                           <p className="label font-bold text-fg-primary">{toolkit.name}</p>
                           <p className="caption text-fg-tertiary">{toolkit.description}</p>
                         </div>
-                      </button>
+                      </Button>
                     ))
                   ) : (
                     <div className="text-center py-12 space-y-3">
@@ -172,10 +178,16 @@ export const ToolSelectionModal: React.FC<ToolSelectionModalProps> = ({
 
               {step === 'CONNECT_TOOLKIT' && selectedToolkit && (
                 <div className="space-y-8">
-                  <button onClick={handleBack} className="flex items-center gap-2 text-primary label font-bold hover:underline">
-                    <ArrowLeft className="w-4 h-4" />
+                  <Button
+                    type="button"
+                    variant="Tertiary"
+                    size="s"
+                    onClick={handleBack}
+                    className="border-0 p-0 text-primary shadow-none label font-bold hover:underline"
+                    iconLeft={<ArrowLeft className="w-4 h-4" />}
+                  >
                     Volver a herramientas
-                  </button>
+                  </Button>
                   
                   <div className="p-6 border border-border-tertiary rounded-2xl flex items-center gap-4">
                     <div className="p-3 bg-bg-tertiary rounded-xl">
@@ -190,18 +202,22 @@ export const ToolSelectionModal: React.FC<ToolSelectionModalProps> = ({
                   <div className="p-6 border border-border-tertiary rounded-2xl space-y-6">
                     <p className="label text-fg-secondary">No conectado — conéctate para usar herramientas de esta integración</p>
                     <div className="flex justify-end">
-                      <button className="flex items-center gap-2 px-6 py-2.5 bg-primary text-white label font-bold rounded-xl hover:bg-bg-interactive-primary-hovered transition-all shadow-lg">
-                        <Link2 className="w-4 h-4" />
+                      <Button
+                        type="button"
+                        variant="Primary"
+                        size="m"
+                        iconLeft={<Link2 className="w-4 h-4" />}
+                      >
                         Conectar
-                      </button>
+                      </Button>
                     </div>
                   </div>
 
                   <div className="space-y-4">
                     <p className="caption text-fg-tertiary">Después de conectarte en la nueva pestaña, haz clic en "Verificar de nuevo" o vuelve a abrir esta integración para actualizar el estado.</p>
-                    <button className="px-6 py-2.5 border border-border-tertiary rounded-xl label font-bold text-fg-primary hover:bg-bg-secondary transition-all">
+                    <Button type="button" variant="Secondary" size="m">
                       Verificar de nuevo
-                    </button>
+                    </Button>
                   </div>
                 </div>
               )}
@@ -209,10 +225,16 @@ export const ToolSelectionModal: React.FC<ToolSelectionModalProps> = ({
               {step === 'SELECT_TOOLS' && selectedToolkit && (
                 <div className="space-y-6">
                   <div className="flex items-center gap-2 text-primary label font-bold">
-                    <button onClick={handleBack} className="hover:underline flex items-center gap-2">
-                      <ArrowLeft className="w-4 h-4" />
+                    <Button
+                      type="button"
+                      variant="Tertiary"
+                      size="s"
+                      onClick={handleBack}
+                      className="border-0 p-0 text-primary shadow-none hover:underline"
+                      iconLeft={<ArrowLeft className="w-4 h-4" />}
+                    >
                       Volver
-                    </button>
+                    </Button>
                     <span className="text-fg-tertiary font-normal">|</span>
                     <span className="text-fg-tertiary font-normal">{selectedToolkit.name}</span>
                   </div>
@@ -222,25 +244,30 @@ export const ToolSelectionModal: React.FC<ToolSelectionModalProps> = ({
                       filteredTools.map((tool) => {
                         const isSelected = tempSelected.some(t => t.id === tool.id);
                         return (
-                          <button
+                          <Button
                             key={tool.id}
+                            type="button"
+                            variant="Secondary"
+                            size="l"
                             onClick={() => toggleTool(tool)}
-                            className={`w-full p-4 border rounded-2xl transition-all text-left flex gap-4 ${
-                              isSelected 
-                                ? 'border-primary bg-primary/5' 
+                            className={`w-full !h-auto !min-h-0 justify-start gap-4 rounded-2xl p-4 text-left font-normal shadow-none ${
+                              isSelected
+                                ? 'border-primary bg-primary/5'
                                 : 'border-border-tertiary hover:bg-bg-secondary'
                             }`}
                           >
-                            <div className={`mt-1 w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-all ${
-                              isSelected ? 'bg-primary border-primary' : 'border-border-tertiary bg-white'
-                            }`}>
-                              {isSelected && <Check className="w-3 h-3 text-white" />}
+                            <div
+                              className={`mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded border transition-all ${
+                                isSelected ? 'border-primary bg-primary' : 'border-border-tertiary bg-white'
+                              }`}
+                            >
+                              {isSelected && <Check className="h-3 w-3 text-white" />}
                             </div>
-                            <div className="space-y-1">
+                            <div className="space-y-1 text-left">
                               <p className="label font-bold text-fg-primary">{tool.name}</p>
-                              <p className="caption text-fg-tertiary line-clamp-2">{tool.description}</p>
+                              <p className="caption line-clamp-2 text-fg-tertiary">{tool.description}</p>
                             </div>
-                          </button>
+                          </Button>
                         );
                       })
                     ) : (
@@ -258,25 +285,31 @@ export const ToolSelectionModal: React.FC<ToolSelectionModalProps> = ({
 
             {/* Footer */}
             <div className="px-8 py-6 border-t border-border-tertiary bg-bg-secondary/30 flex justify-end items-center gap-3 shrink-0">
-              <button 
-                onClick={handleBack}
-                className={`px-6 py-2.5 label font-bold text-fg-tertiary hover:bg-bg-tertiary rounded-xl transition-all ${
-                  step === 'SELECT_TOOLKIT' ? 'hidden' : ''
-                }`}
-              >
-                Atrás
-              </button>
-              <button 
+              {step !== 'SELECT_TOOLKIT' && (
+                <Button
+                  type="button"
+                  variant="Tertiary"
+                  size="m"
+                  onClick={handleBack}
+                >
+                  Atrás
+                </Button>
+              )}
+              <Button
+                type="button"
+                variant="Primary"
+                size="m"
                 onClick={() => {
                   if (step === 'SELECT_TOOLS') {
                     onSave(tempSelected);
                   }
                   onClose();
                 }}
-                className="px-8 py-2.5 bg-primary text-white label font-bold rounded-xl hover:bg-bg-interactive-primary-hovered transition-all shadow-lg"
               >
-                {step === 'SELECT_TOOLS' ? `Añadir ${tempSelected.length} herramienta${tempSelected.length !== 1 ? 's' : ''}` : 'Cerrar'}
-              </button>
+                {step === 'SELECT_TOOLS'
+                  ? `Añadir ${tempSelected.length} herramienta${tempSelected.length !== 1 ? 's' : ''}`
+                  : 'Cerrar'}
+              </Button>
             </div>
           </motion.div>
         </motion.div>
