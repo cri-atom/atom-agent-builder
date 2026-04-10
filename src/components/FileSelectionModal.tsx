@@ -136,14 +136,15 @@ export const FileSelectionModal: React.FC<FileSelectionModalProps> = ({
           </div>
 
           <div className="flex-1 overflow-y-auto p-8 space-y-6">
-            <div className="border border-border-tertiary rounded-2xl overflow-x-auto">
-              <table className="w-full text-left border-collapse min-w-[700px]">
+            {/* Table */}
+            <div className="table-shell table-shell--embedded">
+              <table className="table table--min-scroll">
                 <thead>
-                  <tr className="bg-bg-secondary border-b border-border-tertiary">
-                    <th className="p-4 w-12">
+                  <tr className="table__head-row">
+                    <th className="table__th table__th--control">
                       <input 
                         type="checkbox" 
-                        className="w-4 h-4 rounded border-border-tertiary text-primary focus:ring-primary/20"
+                        className="table__checkbox"
                         checked={tempSelected.length === filteredFiles.length && filteredFiles.length > 0}
                         onChange={(e) => {
                           if (e.target.checked) {
@@ -152,12 +153,13 @@ export const FileSelectionModal: React.FC<FileSelectionModalProps> = ({
                             setTempSelected([]);
                           }
                         }}
+                        aria-label="Seleccionar todos los archivos"
                       />
                     </th>
-                    <th className="p-4 label font-bold text-fg-tertiary uppercase tracking-wider">Nombre</th>
-                    <th className="p-4 label font-bold text-fg-tertiary uppercase tracking-wider">Tipo</th>
-                    <th className="p-4 label font-bold text-fg-tertiary uppercase tracking-wider">Tamaño</th>
-                    <th className="p-4 label font-bold text-fg-tertiary uppercase tracking-wider">Actualizado</th>
+                    <th className="table__th">Nombre</th>
+                    <th className="table__th">Tipo</th>
+                    <th className="table__th">Tamaño</th>
+                    <th className="table__th">Actualizado</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -166,26 +168,28 @@ export const FileSelectionModal: React.FC<FileSelectionModalProps> = ({
                     return (
                       <tr 
                         key={idx} 
-                        className={`border-b border-border-tertiary hover:bg-bg-secondary/50 transition-all cursor-pointer ${isSelected ? 'bg-primary/5' : ''}`}
+                        className={`table__row cursor-pointer${isSelected ? ' table__row--selected' : ''}`}
                         onClick={() => toggleFile(file)}
                       >
-                        <td className="p-4">
+                        <td className="table__td table__td--control">
                           <input 
                             type="checkbox" 
-                            className="w-4 h-4 rounded border-border-tertiary text-primary focus:ring-primary/20"
+                            className="table__checkbox"
                             checked={isSelected}
                             readOnly
+                            tabIndex={-1}
+                            aria-label={file.name}
                           />
                         </td>
-                        <td className="p-4 max-w-[300px]">
-                          <div className="flex items-center gap-3">
-                            <FileText className="w-4 h-4 text-fg-tertiary shrink-0" />
-                            <span className="label font-bold text-fg-primary truncate" title={file.name}>{file.name}</span>
+                        <td className="table__td table__td--name">
+                          <div className="table__cell-lead">
+                            <FileText className="table__lead-icon" aria-hidden />
+                            <span className="table__cell-title truncate" title={file.name}>{file.name}</span>
                           </div>
                         </td>
-                        <td className="p-4 label text-fg-tertiary">{file.type}</td>
-                        <td className="p-4 label text-fg-tertiary">{file.size}</td>
-                        <td className="p-4 label text-fg-tertiary">{file.updatedAt}</td>
+                        <td className="table__td table__cell-meta">{file.type}</td>
+                        <td className="table__td table__cell-meta">{file.size}</td>
+                        <td className="table__td table__cell-meta">{file.updatedAt}</td>
                       </tr>
                     );
                   })}
@@ -193,6 +197,7 @@ export const FileSelectionModal: React.FC<FileSelectionModalProps> = ({
               </table>
             </div>
 
+            {/* Pagination */}
             <div className="flex items-center justify-between pt-4">
               <div className="flex items-center gap-4">
                 <p className="label text-fg-tertiary">Registros por página</p>
