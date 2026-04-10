@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Search, ChevronLeft, ChevronRight, Link2, Check, ArrowLeft, Wrench, Mail, Github, Calendar, FileText, LayoutGrid, Globe } from 'lucide-react';
 import { Toolkit, Tool } from '../types';
 
-import { HttpRequestModal } from './HttpRequestModal';
 import { Button } from './Button';
 
 interface ToolSelectionModalProps {
@@ -88,7 +88,7 @@ export const ToolSelectionModal: React.FC<ToolSelectionModalProps> = ({
     }
   };
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div
@@ -96,7 +96,18 @@ export const ToolSelectionModal: React.FC<ToolSelectionModalProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[150] flex items-center justify-center p-4"
+          className="z-[150] flex max-w-none flex-row items-center justify-center p-4 box-border"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            minWidth: '100vw',
+            maxWidth: '100vw',
+            height: '100dvh',
+            minHeight: '100dvh',
+            boxSizing: 'border-box',
+          }}
         >
           <motion.div
             key="backdrop"
@@ -107,12 +118,16 @@ export const ToolSelectionModal: React.FC<ToolSelectionModalProps> = ({
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
           />
           
-          <motion.div
+          <div
             key="modal"
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            className="bg-bg-primary w-full max-w-lg min-h-[450px] max-h-[80vh] rounded-3xl flex flex-col overflow-hidden border border-border-tertiary shadow-2xl relative z-10"
+            role="dialog"
+            aria-modal="true"
+            className="bg-bg-primary relative z-10 box-border flex max-w-lg shrink-0 flex-col overflow-hidden rounded-3xl border border-border-tertiary shadow-2xl min-h-[450px] max-h-[80vh]"
+            style={{
+              width: 'min(calc(100vw - 2rem), 32rem)',
+              maxWidth: '32rem',
+              flexShrink: 0,
+            }}
           >
             {/* Header */}
             <div className="px-8 py-6 border-b border-border-tertiary space-y-4 shrink-0 bg-bg-primary">
@@ -311,9 +326,10 @@ export const ToolSelectionModal: React.FC<ToolSelectionModalProps> = ({
                   : 'Cerrar'}
               </Button>
             </div>
-          </motion.div>
+          </div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
