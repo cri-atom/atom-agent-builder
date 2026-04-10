@@ -1,0 +1,114 @@
+@theme {
+  /* =========================================
+     LAYER 1: TYPOGRAPHY PRIMITIVES (from tokens JSON)
+     ========================================= */
+
+  /* Font families */
+  --font-family-primary: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-family-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-family-titles: var(--font-family-primary);
+  --font-family-content: var(--font-family-primary);
+  --font-family-display: var(--font-family-primary);
+  --font-family-body: var(--font-family-primary);
+
+  /* Font weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* Font sizes */
+  --font-size-display-xl: 4.5rem;
+  --font-size-display-l: 4rem;
+  --font-size-display-m: 3.5rem;
+  --font-size-display-s: 3.25rem;
+  --font-size-huge-title: 3rem;
+  --font-size-h1: 2.75rem;
+  --font-size-h2: 2.25rem;
+  --font-size-h3: 2rem;
+  --font-size-h4: 1.75rem;
+  --font-size-heading: 1.5rem;
+  --font-size-body: 1.25rem;
+  --font-size-caption: 1rem;
+  --font-size-label: 0.75rem;
+  --font-size-label-small: 0.625rem;
+  --font-size-footnote: 0.5rem;
+
+  /* Line-height scale (base steps, rem) */
+  --line-height-5xxl: 6rem;
+  --line-height-4xxl: 5.5rem;
+  --line-height-3xxl: 5rem;
+  --line-height-2xxl: 4.5rem;
+  --line-height-xxl: 4rem;
+  --line-height-xl: 3.5rem;
+  --line-height-lg: 3rem;
+  --line-height-l: 2.75rem;
+  --line-height-md: 2.5rem;
+  --line-height-m: 2rem;
+  --line-height-sm: 2rem;
+  --line-height-s: 1.5rem;
+  --line-height-xs: 1.5rem;
+  --line-height-xxs: 1rem;
+  --line-height-2xxs: 0.75rem;
+  --line-height-3xxs: 0.5rem;
+
+  /* Line heights by type role */
+  --line-height-display-xl: var(--line-height-5xxl);
+  --line-height-display-l: var(--line-height-4xxl);
+  --line-height-display-m: var(--line-height-3xxl);
+  --line-height-display-s: var(--line-height-2xxl);
+  --line-height-huge-title: var(--line-height-2xxl);
+  --line-height-h1: var(--line-height-xxl);
+  --line-height-h2: var(--line-height-xl);
+  --line-height-h3: var(--line-height-l);
+  --line-height-h4: var(--line-height-md);
+  --line-height-heading: var(--line-height-m);
+  --line-height-body: var(--line-height-sm);
+  --line-height-caption: var(--line-height-s);
+  --line-height-label: var(--line-height-xs);
+  --line-height-label-small: var(--line-height-xxs);
+  --line-height-footnote: var(--line-height-xxs);
+
+  /* Letter-spacing by role (JSON values are 0) */
+  --letter-spacing-display-xl: 0;
+  --letter-spacing-display-l: 0;
+  --letter-spacing-display-m: 0;
+  --letter-spacing-display-s: 0;
+  --letter-spacing-huge-title: 0;
+  --letter-spacing-h1: 0;
+  --letter-spacing-h2: 0;
+  --letter-spacing-h3: 0;
+  --letter-spacing-h4: 0;
+  --letter-spacing-heading: 0;
+  --letter-spacing-body: 0;
+  --letter-spacing-caption: 0;
+  --letter-spacing-label: 0;
+  --letter-spacing-label-small: 0;
+  --letter-spacing-footnote: 0;
+
+  /* =========================================
+     Extensions (not in primitives JSON; app / utilities)
+     ========================================= */
+     
+  /* TO DO: refactorizar estos tokens hacia los correctos */
+
+  /* Relative line heights for composition */
+  --line-height-none: 1;
+  --line-height-tight: 1.1;
+  --line-height-snug: 1.25;
+  --line-height-normal: 1.3;
+  --line-height-relaxed: 1.5;
+  --line-height-loose: 1.8;
+
+  /* Generic tracking scale (typography-classes, headings) */
+  --tracking-tighter: -0.06em;
+  --tracking-tight: -0.04em;
+  --tracking-normal: -0.02em;
+  --tracking-wide: 0;
+  --tracking-wider: 0.02em;
+  --tracking-widest: 0.06em;
+
+  /* Button / dense UI text sizes (px; not in JSON scale) */
+  --text-label-regular: 14px;
+  --text-body-regular: 16px;
+  --text-body-large: 18px;
+}

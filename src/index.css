@@ -1,5 +1,14 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+@import "./styles/tokens/colors/colors.css";
+@import "./styles/tokens/colors/semantic-light-colors.css";
+@import "./styles/tokens/colors/dialog-backdrop-colors.css";
+@import "./styles/tokens/typography/typography.css";
+@import "./styles/components/typography-classes.css";
+@import "./styles/tokens/stroke/stroke.css";
+@import "./styles/tokens/radius/radius.css";
+@import "./styles/tokens/spacing/spacing.css";
+@import "./styles/tokens/breakpoints/breakpoints.css";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -287,3 +296,4 @@
 .react-flow__edge.selected .react-flow__edge-path {
   @apply !stroke-primary;
 }
+

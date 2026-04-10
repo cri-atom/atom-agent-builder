@@ -1,0 +1,10 @@
+@theme {
+  /* =========================================
+     BREAKPOINT PRIMITIVES (from primitives.tokens.json)
+     ========================================= */
+  --breakpoint-xs: 600px;
+  --breakpoint-sm: 960px;
+  --breakpoint-md: 1280px;
+  --breakpoint-lg: 1920px;
+  --breakpoint-xl: 1921px;
+}

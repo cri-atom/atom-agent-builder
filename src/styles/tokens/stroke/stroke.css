@@ -1,0 +1,10 @@
+@theme {
+  /* =========================================
+     STROKE PRIMITIVES (from primitives.tokens.json)
+     ========================================= */
+  --stroke-none: 0;
+  --stroke-2xs: 0.03125rem;
+  --stroke-xs: 0.0625rem;
+  --stroke-s: 0.125rem;
+  --stroke-m: 0.25rem;
+}

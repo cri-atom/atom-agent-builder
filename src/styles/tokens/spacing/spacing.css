@@ -1,0 +1,32 @@
+@theme {
+  /* =========================================
+     SPACING PRIMITIVES (from primitives.tokens.json)
+     ========================================= */
+  --spacing-none: 0;
+  --spacing-xxs: 0.125rem;
+  --spacing-xs: 0.25rem;
+  --spacing-s: 0.5rem;
+  --spacing-sm: 0.75rem;
+  --spacing-m: 1rem;
+  --spacing-md: 1.25rem;
+  --spacing-l: 1.5rem;
+  --spacing-lg: 1.75rem;
+  --spacing-xl: 2rem;
+  --spacing-xxl: 2.25rem;
+  --spacing-2xxl: 2.5rem;
+  --spacing-3xxl: 2.75rem;
+  --spacing-4xxl: 3rem;
+  --spacing-5xxl: 3.25rem;
+  --spacing-6xxl: 3.5rem;
+  --spacing-7xxl: 3.75rem;
+  --spacing-8xxl: 4rem;
+  --spacing-9xxl: 4.25rem;
+  --spacing-10xxl: 4.5rem;
+  --spacing-11xxl: 4.75rem;
+  --spacing-12xxl: 5rem;
+  --spacing-13xxl: 5.25rem;
+  --spacing-14xxl: 5.5rem;
+  --spacing-15xxl: 5.75rem;
+  --spacing-16xxl: 6rem;
+  --spacing-17xxl: 6.25rem;
+}

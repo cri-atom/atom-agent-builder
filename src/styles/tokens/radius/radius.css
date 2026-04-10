@@ -1,0 +1,21 @@
+@theme {
+  /* =========================================
+     RADIUS PRIMITIVES (from primitives.tokens.json)
+     ========================================= */
+  --radius-none: 0;
+  --radius-xxs: 0.125rem;
+  --radius-xs: 0.25rem;
+  --radius-s: 0.5rem;
+  --radius-sm: 0.75rem;
+  --radius-m: 1rem;
+  --radius-md: 1.25rem;
+  --radius-l: 1.5rem;
+  --radius-lg: 1.75rem;
+  --radius-xl: 2rem;
+  --radius-xxl: 2.25rem;
+  --radius-2xxl: 2.5rem;
+  --radius-3xxl: 2.75rem;
+  --radius-4xxl: 3rem;
+  --radius-5xxl: 3.25rem;
+  --radius-pill: 9999px;
+}
