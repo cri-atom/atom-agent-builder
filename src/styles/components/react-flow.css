@@ -1,0 +1,16 @@
+/* React Flow Customizations */
+.react-flow__node {
+  @apply !rounded-xl !border-none !shadow-none;
+}
+
+.react-flow__handle {
+  @apply !w-3 !h-3 !bg-bg-quaternary !border-2 !border-bg-primary;
+}
+
+.react-flow__edge-path {
+  @apply !stroke-border-secondary !stroke-[2px];
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  @apply !stroke-brand-primary;
+}
