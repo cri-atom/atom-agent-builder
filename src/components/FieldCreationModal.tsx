@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Button } from './Button';
@@ -35,20 +36,36 @@ export const FieldCreationModal: React.FC<FieldCreationModalProps> = ({
     setLength('');
   };
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          key="field-modal-overlay"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+          className="z-[100] flex max-w-none flex-row items-center justify-center bg-black/40 p-4 backdrop-blur-sm box-border"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            minWidth: '100vw',
+            maxWidth: '100vw',
+            height: '100dvh',
+            minHeight: '100dvh',
+            boxSizing: 'border-box',
+          }}
         >
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            className="bg-white w-full max-w-xl rounded-xl shadow-2xl overflow-hidden p-8"
+          <div
+            role="dialog"
+            aria-modal="true"
+            className="relative z-10 box-border flex max-w-xl shrink-0 flex-col overflow-hidden rounded-xl bg-white p-8 shadow-2xl"
+            style={{
+              width: 'min(calc(100vw - 2rem), 36rem)',
+              maxWidth: '36rem',
+              flexShrink: 0,
+            }}
           >
             <div className="flex items-center justify-between mb-2">
               <h2 className="h2 text-fg-primary font-bold">Crear nuevo campo de información</h2>
@@ -142,9 +159,10 @@ export const FieldCreationModal: React.FC<FieldCreationModalProps> = ({
                 Crear
               </Button>
             </div>
-          </motion.div>
+          </div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };

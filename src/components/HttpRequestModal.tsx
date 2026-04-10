@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Globe, ChevronDown, Info, Play, Settings2 } from 'lucide-react';
 import { Tool } from '../types';
@@ -88,20 +89,36 @@ export const HttpRequestModal: React.FC<HttpRequestModalProps> = ({
     onClose();
   };
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          key="http-modal-overlay"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          className="z-[200] flex max-w-none flex-row items-center justify-center bg-black/60 p-4 backdrop-blur-sm box-border"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            minWidth: '100vw',
+            maxWidth: '100vw',
+            height: '100dvh',
+            minHeight: '100dvh',
+            boxSizing: 'border-box',
+          }}
         >
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            className="bg-bg-primary w-full max-w-lg rounded-3xl flex flex-col overflow-hidden border border-border-tertiary shadow-2xl max-h-[90vh]"
+          <div
+            role="dialog"
+            aria-modal="true"
+            className="bg-bg-primary relative z-10 box-border flex max-w-lg shrink-0 flex-col overflow-hidden rounded-3xl border border-border-tertiary shadow-2xl max-h-[90vh]"
+            style={{
+              width: 'min(calc(100vw - 2rem), 32rem)',
+              maxWidth: '32rem',
+              flexShrink: 0,
+            }}
           >
             {/* Header */}
             <div className="px-8 py-6 border-b border-border-tertiary flex items-center justify-between bg-bg-primary shrink-0">
@@ -286,9 +303,10 @@ export const HttpRequestModal: React.FC<HttpRequestModalProps> = ({
               <Button variant="Tertiary" onClick={onClose}>Cancelar</Button>
               <Button variant="Primary" onClick={handleSave}>Guardar configuración</Button>
             </div>
-          </motion.div>
+          </div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };

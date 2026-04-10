@@ -3,6 +3,7 @@ import { X, Globe, MessageSquare, Layers, Tag, Plus, Trash2, ChevronDown, Chevro
 import { motion, AnimatePresence } from 'motion/react';
 import { GlobalConfig, GlobalStage, GlobalTag, SaveField } from '../types';
 import { Button } from './Button';
+import { CANVAS_CHROME_TOP, CANVAS_PANEL_WIDTH_PX } from '../lib/canvasChrome';
 
 interface GlobalConfigPanelProps {
   config: GlobalConfig;
@@ -87,17 +88,24 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
   };
 
   return (
-    <div className="relative flex h-full shrink-0">
-      <motion.div
-        initial={false}
-        animate={{ 
-          width: isOpen ? 400 : 0,
-          opacity: isOpen ? 1 : 0,
-          marginRight: isOpen ? 0 : -20
-        }}
-        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="h-full bg-bg-primary border-r border-border-tertiary flex flex-col overflow-hidden shadow-xl z-20"
-      >
+    <div
+      className="pointer-events-none absolute z-30 flex"
+      style={{
+        left: 'var(--spacing-s)',
+        top: CANVAS_CHROME_TOP,
+        bottom: 'var(--spacing-s)',
+      }}
+    >
+      <div className="pointer-events-auto relative flex h-full min-h-0">
+        <motion.div
+          initial={false}
+          animate={{
+            width: isOpen ? CANVAS_PANEL_WIDTH_PX : 0,
+            opacity: isOpen ? 1 : 0,
+          }}
+          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+          className="flex h-full max-h-full min-h-0 flex-col overflow-hidden rounded-[var(--radius-sm)] border border-border-tertiary bg-bg-primary shadow-xl"
+        >
         {/* Header */}
         <div className="px-6 py-5 border-b border-border-tertiary flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
@@ -112,7 +120,7 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar min-w-[400px]">
+        <div className="custom-scrollbar min-h-0 min-w-0 flex-1 space-y-8 overflow-y-auto p-6">
           {/* General Instructions */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 px-1">
@@ -404,16 +412,18 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
             </div>
           </div>
         </div>
-      </motion.div>
+        </motion.div>
 
-      {/* Toggle Button */}
-      <div className="absolute left-full top-1/2 -translate-y-1/2 z-30">
-        <button
-          onClick={onToggle}
-          className="w-6 h-12 bg-bg-primary border border-l-0 border-border-tertiary rounded-r-xl flex items-center justify-center text-fg-tertiary hover:text-primary hover:bg-bg-secondary transition-all shadow-md"
-        >
-          {isOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
-        </button>
+        {/* Toggle Button */}
+        <div className="absolute top-1/2 left-full z-30 -translate-y-1/2">
+          <button
+            type="button"
+            onClick={onToggle}
+            className="flex h-12 w-6 items-center justify-center rounded-r-xl border border-border-tertiary border-l-0 bg-bg-primary text-fg-tertiary shadow-md transition-all hover:bg-bg-secondary hover:text-primary"
+          >
+            {isOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+          </button>
+        </div>
       </div>
     </div>
   );

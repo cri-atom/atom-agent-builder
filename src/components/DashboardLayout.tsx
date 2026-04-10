@@ -1,10 +1,10 @@
 import React from 'react';
 import { 
-  Search, Bell, Settings, HelpCircle, ChevronDown, 
+  Search, Bell, Settings, HelpCircle, 
   LayoutDashboard, Phone, MessageSquare, Users, 
   Wand2, Briefcase, UserCheck, BarChart3, 
   Building2, FolderTree, Bot, ChevronRight,
-  Megaphone, List, GitBranch, Webhook, Tag, PlayCircle
+  Megaphone, List, GitBranch, Webhook, Tag
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -19,13 +19,19 @@ interface DashboardLayoutProps {
   activeModule: string;
   onModuleChange: (module: string) => void;
   isCompact?: boolean;
+  /** Oculta sidebars (presentación) p. ej. vista editor de flujo a pantalla completa */
+  hideSidebar?: boolean;
+  /** Oculta header superior de la columna principal */
+  hideTopBar?: boolean;
 }
 
 export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ 
   children, 
   activeModule, 
   onModuleChange,
-  isCompact = false
+  isCompact = false,
+  hideSidebar = false,
+  hideTopBar = false,
 }) => {
   const menuItems = [
     { 
@@ -58,8 +64,9 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const isCampanasActive = activeModule === 'campanas' || campanasItem?.subItems?.some(s => s.id === activeModule);
 
   return (
-    <div className="flex h-screen w-full bg-[#F8F9FA] overflow-hidden font-sans">
+    <div className="flex h-screen w-full bg-bg-secondary overflow-hidden font-sans">
       {/* Sidebar */}
+      {!hideSidebar && (
       <aside className={cn(
         "bg-white border-r border-gray-200 flex flex-col z-30 shrink-0 transition-all duration-300",
         isCompact ? "w-20" : "w-64"
@@ -161,9 +168,10 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           </Button>
         </div>
       </aside>
+      )}
 
       {/* Secondary Sidebar (Panel al costado) */}
-      {isCampanasActive && campanasItem && !isCompact && (
+      {!hideSidebar && isCampanasActive && campanasItem && !isCompact && (
         <aside className="w-64 bg-white border-r border-gray-200 flex flex-col z-20 animate-in slide-in-from-left-4 duration-300">
           <div className="p-6 border-b border-gray-100">
             <h2 className="text-lg font-bold text-[#1A1A1A]">{campanasItem.label}</h2>
@@ -212,7 +220,8 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top Bar */}
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 z-20">
+        {!hideTopBar && (
+        <header className="h-16 bg-bg-primary border-b border-border-tertiary flex items-center justify-between px-8 z-20">
           <div className="flex items-center gap-4">
             <h1 className="text-xl font-semibold text-[#1A1A1A]">
               {activeModule === 'agentes' || activeModule === 'campanas' ? 'Campañas' : 'Configuraciones'}
@@ -250,6 +259,7 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             </div>
           </div>
         </header>
+        )}
 
         {/* Content Area */}
         <main className="flex-1 overflow-hidden relative">

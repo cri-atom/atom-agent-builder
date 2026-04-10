@@ -13,6 +13,7 @@
 @import "./styles/components/button-classes.css";
 @import "./styles/components/table.css";
 @import "./styles/components/table-classes.css";
+@import "./styles/components/dashboard-agents.css";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
