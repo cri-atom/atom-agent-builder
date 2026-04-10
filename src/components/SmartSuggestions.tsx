@@ -16,9 +16,9 @@ export const SmartSuggestions: React.FC<SmartSuggestionsProps> = ({ suggestions,
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 20 }}
-          className="absolute right-6 top-20 w-72 z-20"
+          className="absolute left-[var(--spacing-s)] top-[var(--spacing-s)] z-20 w-72 max-w-[min(18rem,calc(100%-var(--spacing-s)*2))]"
         >
-          <div className="bg-white/80 backdrop-blur-md border border-border-tertiary rounded-3xl p-5 shadow-2xl shadow-primary/5">
+          <div className="rounded-3xl border border-border-tertiary bg-bg-primary/90 p-5 shadow-2xl shadow-primary/5 backdrop-blur-md">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                 <Sparkles className="w-4 h-4 text-primary" />
@@ -34,7 +34,7 @@ export const SmartSuggestions: React.FC<SmartSuggestionsProps> = ({ suggestions,
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
                   onClick={() => onAddNode(suggestion)}
-                  className="w-full text-left p-3 rounded-2xl bg-bg-secondary hover:bg-white border border-transparent hover:border-primary/20 transition-all group relative overflow-hidden"
+                  className="group relative w-full overflow-hidden rounded-2xl border border-transparent bg-bg-secondary p-3 text-left transition-all hover:border-primary/20 hover:bg-bg-primary"
                 >
                   <div className="flex items-center justify-between relative z-10">
                     <span className="caption font-semibold text-fg-secondary group-hover:text-fg-primary transition-colors pr-6">

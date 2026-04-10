@@ -8,6 +8,7 @@ import { HttpRequestModal } from './HttpRequestModal';
 import { FieldCreationModal } from './FieldCreationModal';
 import { AgentNodeData, EndNodeData, LLMEdgeData, SaveField, KnowledgeBaseDoc, Tool } from '../types';
 import { Button } from './Button';
+import { CANVAS_CHROME_TOP, CANVAS_PANEL_WIDTH_PX } from '../lib/canvasChrome';
 
 interface ConfigPanelProps {
   selectedElement: any;
@@ -33,7 +34,7 @@ const IntegrationAccordionItem: React.FC<IntegrationAccordionItemProps> = ({ too
         <div className="flex gap-4">
           <div className="p-2 bg-bg-tertiary rounded-xl">
             {tool.toolkitId === 'http' ? (
-              <Globe className="w-5 h-5 text-[#34A853]" />
+              <Globe className="h-5 w-5 text-fg-status-success" />
             ) : (
               <Wrench className="w-5 h-5 text-fg-tertiary" />
             )}
@@ -161,10 +162,16 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
 
   return (
     <motion.div
-      initial={{ x: 600 }}
-      animate={{ x: 0 }}
-      exit={{ x: 600 }}
-      className="w-[600px] bg-bg-primary border-l border-border-tertiary flex flex-col h-full z-10 shadow-2xl"
+      initial={{ x: 48, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: 48, opacity: 0 }}
+      transition={{ type: 'spring', damping: 28, stiffness: 320 }}
+      className="absolute right-[var(--spacing-s)] z-20 flex max-w-full flex-col overflow-hidden rounded-[var(--radius-sm)] border border-border-tertiary bg-bg-primary shadow-2xl"
+      style={{
+        top: CANVAS_CHROME_TOP,
+        bottom: 'var(--spacing-s)',
+        width: `min(${CANVAS_PANEL_WIDTH_PX}px, calc(100% - var(--spacing-s) * 2))`,
+      }}
     >
       <div className="p-5 border-b border-border-tertiary flex items-center justify-between">
         {isAgent ? (
@@ -253,7 +260,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                   />
                   <div 
                     onClick={onOpenPromptEditor}
-                    className="absolute bottom-3 right-3 p-1.5 bg-white border border-border-tertiary rounded-md shadow-sm opacity-0 group-hover:opacity-100 transition-all cursor-pointer hover:bg-bg-secondary"
+                    className="absolute bottom-3 right-3 cursor-pointer rounded-md border border-border-tertiary bg-bg-primary p-1.5 opacity-0 shadow-sm transition-all group-hover:opacity-100 hover:bg-bg-secondary"
                   >
                     <Layout className="w-3.5 h-3.5 text-fg-tertiary" />
                   </div>
@@ -265,7 +272,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
-                      className="absolute left-0 right-0 top-full mt-1 bg-white border border-border-tertiary rounded-xl shadow-2xl z-50 overflow-hidden"
+                      className="absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-xl border border-border-tertiary bg-bg-primary shadow-2xl"
                     >
                       <div className="p-2 border-b border-border-tertiary bg-bg-secondary/50 flex items-center gap-2">
                         <Wrench className="w-3.5 h-3.5 text-primary" />
@@ -290,7 +297,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                                 }}
                                 className="group w-full !min-h-0 justify-start rounded-lg border-0 px-3 py-2 font-normal shadow-none hover:bg-bg-secondary"
                                 iconLeft={
-                                  <div className="rounded-md bg-bg-tertiary p-1.5 transition-colors group-hover:bg-white">
+                                  <div className="rounded-md bg-bg-tertiary p-1.5 transition-colors group-hover:bg-bg-primary">
                                     <Wrench className="h-3.5 w-3.5 text-fg-tertiary" />
                                   </div>
                                 }
@@ -398,7 +405,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                                   variant="Secondary"
                                   size="m"
                                   onClick={() => setIsFieldDropdownOpen(field.id)}
-                                  className="w-full justify-between rounded-xl border-border-tertiary bg-white font-normal shadow-none label text-fg-primary hover:border-primary/50"
+                                  className="label w-full justify-between rounded-xl border-border-tertiary bg-bg-primary font-normal text-fg-primary shadow-none hover:border-primary/50"
                                   iconRight={<ChevronDown className="h-4 w-4 shrink-0 text-fg-tertiary" />}
                                 >
                                   <span className="truncate">{field.label}</span>
@@ -412,7 +419,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                                         initial={{ opacity: 0, y: 5 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: 5 }}
-                                        className="absolute top-full left-0 right-0 mt-1 bg-white border border-border-tertiary rounded-xl shadow-xl z-50 overflow-hidden"
+                                        className="absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-xl border border-border-tertiary bg-bg-primary shadow-xl"
                                       >
                                         <div className="p-2 border-b border-border-tertiary flex items-center gap-2">
                                           <Search className="w-4 h-4 text-fg-tertiary" />

@@ -11,7 +11,6 @@ import { Dashboard } from './components/Dashboard';
 import { Settings } from 'lucide-react';
 import { Canvas } from './components/Canvas';
 import { ConfigPanel } from './components/ConfigPanel';
-import { GlobalConfigPanel } from './components/GlobalConfigPanel';
 import { PromptEditorModal } from './components/PromptEditorModal';
 import { Flow, GlobalConfig } from './types';
 import { AnimatePresence } from 'motion/react';
@@ -143,9 +142,17 @@ export default function App() {
     saveFields: [],
   };
 
-  const currentFlow = useMemo(() => 
-    flows.find(f => f.id === currentFlowId), 
+  const currentFlow = useMemo(() =>
+    flows.find(f => f.id === currentFlowId),
     [flows, currentFlowId]
+  );
+
+  const isCanvasEditorView = useMemo(
+    () =>
+      (activeModule === 'agentes' || activeModule === 'campanas') &&
+      activeTab === 'agents' &&
+      !!currentFlow,
+    [activeModule, activeTab, currentFlow]
   );
 
   const handleNewAgent = useCallback(() => {
@@ -419,6 +426,8 @@ export default function App() {
       activeModule={activeModule} 
       onModuleChange={setActiveModule}
       isCompact={activeTab === 'agents'}
+      hideSidebar={isCanvasEditorView}
+      hideTopBar={isCanvasEditorView}
     >
       {activeModule === 'agentes' || activeModule === 'campanas' ? (
         <div className="h-full flex overflow-hidden relative">
@@ -447,6 +456,7 @@ export default function App() {
                   onBack={() => setActiveTab('dashboard')}
                   globalConfig={currentFlow.globalConfig || DEFAULT_GLOBAL_CONFIG}
                   onUpdateGlobalConfig={handleUpdateGlobalConfig}
+                  rightInspectorOpen={!!selectedElement}
                 />
                 <AnimatePresence>
                   {selectedElement && (
