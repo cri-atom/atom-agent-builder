@@ -1,0 +1,11 @@
+@theme {
+  /* =========================================
+     Provisional: dialog / backdrop
+     (no integrados al sistema de tokens DS aún)
+     ========================================= */
+  --color-dialog-bg-default: var(--color-neutral-0);
+  --color-dialog-border-default: var(--color-zinc-300);
+  --color-dialog-fg-primary: var(--color-zinc-950);
+  --color-dialog-fg-secondary: var(--color-zinc-600);
+  --color-backdrop-overlay: rgba(0, 0, 0, 0.5);
+}

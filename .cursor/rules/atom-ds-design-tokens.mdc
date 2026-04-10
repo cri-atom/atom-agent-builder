@@ -1,0 +1,42 @@
+---
+description: Atom DS design tokens, three layers, and repo file conventions for UI/CSS
+alwaysApply: true
+---
+
+# Atom DS — design tokens y capas
+
+Documentación oficial:
+
+- [Design Tokens](https://atom-ds-documentation-brown.vercel.app/foundations/tokens/) — variables CSS (`--token` + `var(--token)`), categorías, naming `--{category}-{property}-{variant}`, sin hardcode de hex/px salvo excepción.
+- [Token Layers](https://atom-ds-documentation-brown.vercel.app/architecture/token-layers/) — primitivo → semántico → componente; tematizar en semántica, no en primitivos.
+
+## Tres capas (resumen)
+
+| Capa | Uso en UI |
+|------|-----------|
+| **1 Primitive** | Casi nunca en componentes; base para definir semántica. |
+| **2 Semantic** | **Por defecto** (~90%): bg/fg/border/status con intención (`--color-bg-primary`, etc.). |
+| **3 Component** | Variantes y estados (p. ej. `--buttons-bg-primary-hovered`). |
+
+## Convención de archivos en **este** repo
+
+- **Primitivos:** `src/styles/tokens/{categoria}/` (p. ej. `colors/colors.css`). En colors, la familia **alpha** (`--color-alpha-*`) vive en el mismo `colors.css` (no archivo `opacity` separado).
+- **Semántica (colors):** `colors/semantic-light-colors.css` y `colors/semantic-dark-colors.css` (hermanos de `colors.css`). **Import en runtime:** hoy `src/index.css` carga light + `dialog-backdrop-colors.css`; el archivo dark queda listo para cuando exista selector de tema (p. ej. `.dark`), sin importarlo aún si pisaría a light.
+- **Provisional:** `colors/dialog-backdrop-colors.css` — variables de dialog/backdrop usadas en la app; pendiente de integrar al DS formal.
+- **Tipografía (sin capa semántica separada):** un solo archivo `typography/typography.css` con `@theme`: primitivos (familia, peso, tamaños en rem, escalas de interlineado, letter-spacing por rol) y **extensiones** en el mismo archivo (interlineados relativos, escala `--tracking-*`, `--text-label-regular` / `--text-body-*` para botones, `--font-sans` / `--font-mono`). Las clases `.h1`, `.body`, etc. viven en `src/styles/components/typography-classes.css` e importan tras ese CSS.
+- **Stroke (grosor de borde):** `stroke/stroke.css` — solo `--stroke-*` primitivos (JSON), extensiones `2xs`/`m` y aliases `--border-stroke-*`. **No** mezclar radius ahí.
+- **Radius:** `radius/radius.css` — escala `--radius-*` solo desde JSON (`none` … `5xxl`, `pill`). Overrides puntuales (p. ej. `--radius-s`, `--radius-m`, `--radius-pill`) pueden seguir en el `@theme` de `index.css` hasta migrar componentes.
+- **Spacing:** `spacing/spacing.css` — escala `--spacing-*` solo desde JSON (`none`, `xxs` … `17xxl`). Los atajos `--xxs` / `--xs` / `--s` / `--m` / `--l` / `--xl` en el `@theme` de `index.css` pueden coexistir como overrides locales hasta migrar componentes.
+- **Breakpoints:** `breakpoints/breakpoints.css` — solo `--breakpoint-*` primitivos desde JSON (`xs` … `xl`, valores en px).
+- **Componente:** **un archivo por componente** en `src/styles/components/<nombre>.css` con tokens `--{componente}-*` y estilos del componente. **No** usar un agregado global `src/styles/tokens/component-tokens.css` como modelo de Layer 3.
+
+Referencia de patrón: `src/styles/components/button.css` (`--buttons-*` + consumo de semántica).
+
+**Runtime hoy:** en `src/index.css`, orden de `@import`: colores (`colors.css` → `semantic-light-colors.css` → `dialog-backdrop-colors.css`) → `typography/typography.css` → `components/typography-classes.css` → `stroke/stroke.css` → `radius/radius.css` → `spacing/spacing.css` → `breakpoints/breakpoints.css`; el `@theme` restante (atajos de spacing, overrides de radius si aplica, botones, etc.) sigue en `index.css`. Sin duplicar tokens ya migrados a esos archivos salvo overrides intencionales.
+
+## Al escribir o cambiar estilos
+
+1. Preferir `var(--token)` o utilidades Tailwind generadas desde `@theme`, no valores crudos.
+2. Preferir tokens semánticos `--color-*` (bg/fg/border/status) o clases que los reflejen según el `@theme` activo.
+3. Layer 3 solo en `src/styles/components/<componente>.css`, no en `tokens/component-tokens.css`.
+4. No usar primitivos de paleta (`--color-red-500`, etc.) en UI salvo definir nuevos tokens o depurar.

@@ -1,0 +1,6 @@
+@theme {
+  /* Elevations */
+  --elevation-card: 0px 2px 4px rgba(9, 9, 11, 0.08);
+  --elevation-popover: 0px 6px 14px rgba(9, 9, 11, 0.08);
+  --elevation-modal: 0px 16px 32px rgba(9, 9, 11, 0.08);
+}

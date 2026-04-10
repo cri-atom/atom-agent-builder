@@ -1,0 +1,151 @@
+@theme {
+  /* =========================================
+     LAYER 2: SEMANTIC (DARK)
+     ========================================= */
+
+  /* BG */
+  --color-bg-accent-ai-primary: var(--color-violet-500);
+  --color-bg-accent-ai-secondary: var(--color-violet-950);
+  --color-bg-accent-ai-tertiary: var(--color-pink-900);
+  --color-bg-accent-inbox-active: var(--color-blue-950);
+  --color-bg-accent-inbox-bubble-received: var(--color-neutral-900);
+  --color-bg-accent-inbox-bubble-sent: var(--color-emerald-900);
+  --color-bg-accent-inbox-new: var(--color-green-950);
+  --color-bg-accent-inbox-reassigned: var(--color-amber-950);
+  --color-bg-accent-inbox-return: var(--color-cyan-950);
+  --color-bg-accent-inbox-typification: var(--color-orange-950);
+  --color-bg-accent-indicators-offline: var(--color-red-100);
+  --color-bg-accent-indicators-online: var(--color-green-500);
+  --color-bg-accent-notifications-primary: var(--color-red-500);
+  --color-bg-accent-notifications-secondary: var(--color-red-900);
+  --color-bg-danger-primary: var(--color-red-500);
+  --color-bg-danger-secondary: var(--color-alpha-0);
+  --color-bg-disabled: var(--color-zinc-600);
+  --color-bg-interactive-danger-primary-focused: var(--color-red-500);
+  --color-bg-interactive-danger-primary-hovered: var(--color-red-400);
+  --color-bg-interactive-danger-primary-pressed: var(--color-red-300);
+  --color-bg-interactive-danger-secondary-focused: var(--color-zinc-950);
+  --color-bg-interactive-danger-secondary-hovered: var(--color-red-950);
+  --color-bg-interactive-danger-secondary-pressed: var(--color-red-800);
+  --color-bg-interactive-danger-tertiary-focused: var(--color-zinc-950);
+  --color-bg-interactive-danger-tertiary-hovered: var(--color-red-950);
+  --color-bg-interactive-danger-tertiary-pressed: var(--color-red-800);
+  --color-bg-interactive-link-hovered: var(--color-blue-900);
+  --color-bg-interactive-link-pressed: var(--color-blue-800);
+  --color-bg-interactive-primary-hovered: var(--color-zinc-800);
+  --color-bg-interactive-primary-pressed: var(--color-zinc-700);
+  --color-bg-interactive-secondary-hovered: var(--color-zinc-800);
+  --color-bg-interactive-secondary-pressed: var(--color-zinc-700);
+  --color-bg-interactive-tertiary-hovered: var(--color-zinc-800);
+  --color-bg-interactive-tertiary-pressed: var(--color-zinc-700);
+  --color-bg-inverse-primary: var(--color-zinc-50);
+  --color-bg-inverse-secondary: var(--color-zinc-200);
+  --color-bg-inverse-tertiary: var(--color-zinc-600);
+  --color-bg-primary: var(--color-neutral-1000);
+  --color-bg-quaternary: var(--color-zinc-700);
+  --color-bg-secondary: var(--color-zinc-900);
+  --color-bg-soft-primary: var(--color-alpha-950);
+  --color-bg-soft-secondary: var(--color-alpha-800);
+  --color-bg-soft-tertiary: var(--color-alpha-0);
+  --color-bg-status-error: var(--color-red-950);
+  --color-bg-status-info: var(--color-blue-950);
+  --color-bg-status-success: var(--color-emerald-950);
+  --color-bg-status-warning: var(--color-yellow-950);
+  --color-bg-tertiary: var(--color-zinc-800);
+
+  /* BORDER */
+  --color-border-accent-ai-primary: var(--color-violet-300);
+  --color-border-accent-ai-secondary: var(--color-violet-600);
+  --color-border-brand: var(--color-orange-700);
+  --color-border-disabled: var(--color-zinc-900);
+  --color-border-interactive-danger-primary-focused: var(--color-red-500);
+  --color-border-interactive-danger-secondary-enabled: var(--color-red-600);
+  --color-border-interactive-danger-secondary-focused: var(--color-red-600);
+  --color-border-interactive-danger-secondary-hovered: var(--color-red-600);
+  --color-border-interactive-danger-secondary-loading: var(--color-red-600);
+  --color-border-interactive-danger-secondary-pressed: var(--color-red-500);
+  --color-border-interactive-danger-tertiary-focused: var(--color-red-600);
+  --color-border-interactive-link-focused: var(--color-blue-500);
+  --color-border-interactive-secondary-focused: var(--color-zinc-100);
+  --color-border-interactive-secondary-hovered: var(--color-zinc-600);
+  --color-border-interactive-secondary-pressed: var(--color-zinc-500);
+  --color-border-primary: var(--color-zinc-600);
+  --color-border-secondary: var(--color-zinc-700);
+  --color-border-status-error: var(--color-red-400);
+  --color-border-status-info: var(--color-blue-400);
+  --color-border-status-success: var(--color-green-400);
+  --color-border-status-warning: var(--color-yellow-400);
+  --color-border-tertiary: var(--color-zinc-800);
+
+  /* BRAND */
+  --color-brand-primary: var(--color-orange-500);
+  --color-brand-secondary-blue: var(--color-blue-950);
+  --color-brand-secondary-green: var(--color-green-950);
+  --color-brand-secondary-orange: var(--color-orange-950);
+  --color-brand-secondary-rose: var(--color-rose-950);
+  --color-brand-secondary-violet: var(--color-violet-950);
+
+  /* FG */
+  --color-fg-accent-ai-primary: var(--color-zinc-50);
+  --color-fg-accent-ai-secondary: var(--color-violet-300);
+  --color-fg-accent-ai-tertiary: var(--color-pink-300);
+  --color-fg-accent-inbox-active: var(--color-blue-200);
+  --color-fg-accent-inbox-message: var(--color-sky-100);
+  --color-fg-accent-inbox-message-read: var(--color-blue-400);
+  --color-fg-accent-inbox-message-sent: var(--color-zinc-400);
+  --color-fg-accent-inbox-new: var(--color-green-200);
+  --color-fg-accent-inbox-reassigned: var(--color-amber-200);
+  --color-fg-accent-inbox-return: var(--color-cyan-200);
+  --color-fg-accent-inbox-typification: var(--color-orange-100);
+  --color-fg-accent-notifications-primary: var(--color-zinc-50);
+  --color-fg-accent-notifications-secondary: var(--color-red-300);
+  --color-fg-brand: var(--color-orange-500);
+  --color-fg-disabled: var(--color-zinc-400);
+  --color-fg-interactive-danger-secondary-enabled: var(--color-red-500);
+  --color-fg-interactive-danger-secondary-focused: var(--color-red-400);
+  --color-fg-interactive-danger-secondary-hovered: var(--color-red-400);
+  --color-fg-interactive-danger-secondary-pressed: var(--color-red-300);
+  --color-fg-interactive-danger-tertiary-enabled: var(--color-red-500);
+  --color-fg-interactive-danger-tertiary-focused: var(--color-red-400);
+  --color-fg-interactive-danger-tertiary-hovered: var(--color-red-400);
+  --color-fg-interactive-danger-tertiary-pressed: var(--color-red-300);
+  --color-fg-interactive-link-disabled: var(--color-blue-400);
+  --color-fg-interactive-link-enabled: var(--color-blue-500);
+  --color-fg-interactive-link-focused: var(--color-blue-500);
+  --color-fg-interactive-link-hovered: var(--color-blue-600);
+  --color-fg-interactive-link-pressed: var(--color-blue-700);
+  --color-fg-inverse-disabled: var(--color-zinc-700);
+  --color-fg-inverse-primary: var(--color-zinc-950);
+  --color-fg-inverse-secondary: var(--color-zinc-800);
+  --color-fg-inverse-tertiary: var(--color-zinc-600);
+  --color-fg-primary: var(--color-zinc-100);
+  --color-fg-quaternary: var(--color-zinc-500);
+  --color-fg-secondary: var(--color-zinc-200);
+  --color-fg-status-error: var(--color-red-200);
+  --color-fg-status-info: var(--color-blue-200);
+  --color-fg-status-success: var(--color-emerald-200);
+  --color-fg-status-warning: var(--color-yellow-200);
+  --color-fg-tertiary: var(--color-zinc-400);
+
+  /* App-compat (tokens usados en UI; no estaban en el JSON semántico) */
+  --color-bg-interactive-primary-default: var(--color-zinc-100);
+  --color-bg-interactive-secondary-default: var(--color-neutral-1000);
+  --color-bg-status-neutral: var(--color-zinc-700);
+  --color-bg-status-brand: var(--color-orange-950);
+  --color-bg-status-ai: var(--color-violet-950);
+  --color-fg-status-informative: var(--color-blue-400);
+  --color-fg-status-neutral: var(--color-zinc-400);
+  --color-fg-status-brand: var(--color-orange-400);
+  --color-fg-status-ai: var(--color-purple-400);
+  --color-fg-accent-indicators-online: var(--color-green-400);
+  --color-fg-accent-indicators-offline: var(--color-red-400);
+  --color-fg-accent-indicators-idle: var(--color-yellow-400);
+  --color-fg-accent-indicators-inactive: var(--color-gray-400);
+
+  --color-primary: var(--color-brand-primary);
+  --color-secondary-orange: var(--color-brand-secondary-orange);
+  --color-secondary-green: var(--color-brand-secondary-green);
+  --color-secondary-violet: var(--color-brand-secondary-violet);
+  --color-secondary-blue: var(--color-brand-secondary-blue);
+  --color-secondary-rose: var(--color-brand-secondary-rose);
+}
