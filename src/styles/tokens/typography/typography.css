@@ -64,8 +64,10 @@
   --line-height-heading: var(--line-height-m);
   --line-height-body: var(--line-height-sm);
   --line-height-caption: var(--line-height-s);
-  --line-height-label: var(--line-height-xs);
-  --line-height-label-small: var(--line-height-xxs);
+  /* Label 12px → 16px interlineado (tabla Fixed Line Heights, Atom DS) */
+  --line-height-label: 1rem;
+  /* LabelSmall 10px → 16px interlineado */
+  --line-height-label-small: 1rem;
   --line-height-footnote: var(--line-height-xxs);
 
   /* Letter-spacing by role (JSON values are 0) */

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Settings, Database, Wrench, Save, Sparkles, Wand2, Plus, Trash2, ChevronDown, ChevronRight, Send, Loader2, Layout, FileText, MoreVertical, FolderOpen, Search, CheckSquare, Square, Info, Globe, Code, Table } from 'lucide-react';
+import { X, Settings, Wrench, Wand2, Plus, Trash2, ChevronDown, ChevronRight, Layout, FileText, MoreVertical, Search, CheckSquare, Square, Globe, Code, MessageSquare, AlertTriangle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { FileSelectionModal } from './FileSelectionModal';
 import { ToolSelectionModal } from './ToolSelectionModal';
@@ -9,6 +9,10 @@ import { FieldCreationModal } from './FieldCreationModal';
 import { AgentNodeData, EndNodeData, LLMEdgeData, SaveField, KnowledgeBaseDoc, Tool } from '../types';
 import { Button } from './Button';
 import { CANVAS_CHROME_TOP, CANVAS_PANEL_WIDTH_PX } from '../lib/canvasChrome';
+import { CollapsibleSectionHeader, InspectorTabs, PanelSection } from './panel';
+
+const formFieldBase =
+  'w-full rounded-[var(--radius-s)] border border-border-secondary bg-bg-primary px-[var(--spacing-sm)] py-[var(--spacing-s)] caption text-fg-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20';
 
 interface ConfigPanelProps {
   selectedElement: any;
@@ -69,11 +73,11 @@ const IntegrationAccordionItem: React.FC<IntegrationAccordionItemProps> = ({ too
             <div className="space-y-2">
               <p className="caption text-fg-tertiary">{tool.description}</p>
               <div className="flex items-center gap-2">
-                <span className="label-small font-bold text-fg-tertiary uppercase tracking-wider bg-bg-tertiary px-2 py-0.5 rounded-md">
+                <span className="label-small font-bold text-fg-tertiary bg-bg-tertiary px-2 py-0.5 rounded-md">
                   {tool.toolkitName}
                 </span>
-                <span className="label-small text-fg-tertiary uppercase tracking-wider">
-                  {tool.id?.toUpperCase() || ''}
+                <span className="label-small text-fg-tertiary">
+                  {tool.id || ''}
                 </span>
               </div>
             </div>
@@ -166,64 +170,48 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 48, opacity: 0 }}
       transition={{ type: 'spring', damping: 28, stiffness: 320 }}
-      className="absolute right-[var(--spacing-s)] z-20 flex max-w-full flex-col overflow-hidden rounded-[var(--radius-sm)] border border-border-tertiary bg-bg-primary shadow-2xl"
+      className="absolute right-[var(--spacing-s)] z-20 flex max-w-full min-h-0 flex-col overflow-hidden rounded-[var(--radius-m)] border border-border-tertiary bg-bg-primary shadow-[0px_6px_14px_0px_rgba(9,9,11,0.08)]"
       style={{
         top: CANVAS_CHROME_TOP,
         bottom: 'var(--spacing-s)',
         width: `min(${CANVAS_PANEL_WIDTH_PX}px, calc(100% - var(--spacing-s) * 2))`,
       }}
     >
-      <div className="p-5 border-b border-border-tertiary flex items-center justify-between">
+      <header className="flex items-center gap-[var(--spacing-s)] border-b border-border-tertiary px-[var(--spacing-m)] py-[var(--spacing-s)]">
         {isAgent ? (
-          <input
-            type="text"
-            value={data.label || ''}
-            onChange={(e) => handleInputChange('label', e.target.value)}
-            className="h3 text-fg-primary bg-transparent border-none focus:ring-0 p-0 w-full font-bold"
-            placeholder="Nombre del Agente"
-          />
+          <>
+            <MessageSquare className="size-6 shrink-0 text-fg-quaternary" aria-hidden />
+            <input
+              type="text"
+              value={data.label || ''}
+              onChange={(e) => handleInputChange('label', e.target.value)}
+              className="min-w-0 flex-1 border-none bg-transparent p-0 caption font-bold text-fg-primary outline-none focus:ring-0"
+              placeholder="Nuevo agente"
+            />
+          </>
         ) : (
-          <h2 className="h3 text-fg-primary">
+          <h2 className="min-w-0 flex-1 caption font-bold text-fg-primary">
             {isEnd ? 'Fin' : isStart ? 'Inicio' : 'Condición'}
           </h2>
         )}
-        <div className="flex items-center gap-1">
-          <Button variant="Tertiary" size="s" onClick={onClose} className="p-2">
-            <X className="w-4 h-4 text-fg-tertiary" />
-          </Button>
-        </div>
-      </div>
+        <Button variant="Tertiary" size="s" type="button" onClick={onClose} className="shrink-0 p-1">
+          <X className="size-4 text-fg-secondary" />
+        </Button>
+      </header>
 
       {isAgent && (
-        <div className="flex border-b border-border-tertiary">
-          {[
+        <InspectorTabs
+          tabs={[
             { id: 'general', label: 'General' },
             { id: 'knowledge', label: 'Base de conocimiento' },
             { id: 'tools', label: 'Herramientas' },
-          ].map((tab) => (
-            <Button
-              key={tab.id}
-              type="button"
-              variant="Tertiary"
-              size="m"
-              onClick={() => setActiveTab(tab.id)}
-              className={`relative flex-1 rounded-none border-0 py-3 shadow-none label font-semibold uppercase text-[10px] tracking-wider ${
-                activeTab === tab.id ? 'text-primary' : 'text-fg-tertiary hover:text-fg-primary'
-              }`}
-            >
-              {tab.label}
-              {activeTab === tab.id && (
-                <motion.div
-                  layoutId="activeTab"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
-                />
-              )}
-            </Button>
-          ))}
-        </div>
+          ]}
+          activeId={activeTab}
+          onChange={setActiveTab}
+        />
       )}
 
-      <div className="flex-1 overflow-y-auto p-5">
+      <div className="custom-scrollbar min-h-0 flex-1 overflow-y-auto">
         <AnimatePresence mode="wait">
           {isAgent && activeTab === 'general' && (
             <motion.div
@@ -231,137 +219,124 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="space-y-5"
             >
-              <div className="space-y-1.5 relative">
-                <div className="flex items-center justify-between">
-                  <label className="label text-fg-tertiary">Objetivo de la conversación</label>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="Tertiary"
-                      size="xs"
-                      onClick={onOpenPromptEditor}
-                      iconLeft={<Wand2 size={12} />}
-                    >
-                      Asistente
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="relative group">
-                  <textarea
-                    value={data.instructions || ''}
-                    onChange={handleInstructionsChange}
+              <section className="border-b border-border-tertiary">
+                <div className="flex min-h-[34px] items-center justify-between gap-2 px-[var(--spacing-m)] py-[var(--spacing-s)]">
+                  <h3 className="label font-medium text-fg-primary">Objetivo de la conversación</h3>
+                  <Button
+                    variant="Tertiary"
+                    size="xs"
+                    type="button"
                     onClick={onOpenPromptEditor}
-                    rows={6}
-                    className="w-full bg-bg-secondary border border-border-tertiary rounded-lg px-3 py-2 caption text-fg-primary focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all resize-none cursor-pointer hover:border-primary/50"
-                    placeholder="Añade las instrucciones para el agente."
-                    readOnly
-                  />
-                  <div 
-                    onClick={onOpenPromptEditor}
-                    className="absolute bottom-3 right-3 cursor-pointer rounded-md border border-border-tertiary bg-bg-primary p-1.5 opacity-0 shadow-sm transition-all group-hover:opacity-100 hover:bg-bg-secondary"
+                    iconLeft={<Wand2 size={12} />}
                   >
-                    <Layout className="w-3.5 h-3.5 text-fg-tertiary" />
-                  </div>
+                    Asistente
+                  </Button>
                 </div>
-
-                <AnimatePresence>
-                  {mentionMenu?.isOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-xl border border-border-tertiary bg-bg-primary shadow-2xl"
+                <div className="relative px-[var(--spacing-m)] pb-[var(--spacing-m)] pt-0">
+                  <div className="group relative">
+                    <textarea
+                      value={data.instructions || ''}
+                      onChange={handleInstructionsChange}
+                      onClick={onOpenPromptEditor}
+                      rows={6}
+                      className={`${formFieldBase} resize-none cursor-pointer hover:border-primary/40`}
+                      placeholder="Añade las instrucciones para el agente..."
+                      readOnly
+                    />
+                    <div
+                      onClick={onOpenPromptEditor}
+                      className="absolute bottom-3 right-3 cursor-pointer rounded-md border border-border-tertiary bg-bg-primary p-1.5 opacity-0 shadow-sm transition-all group-hover:opacity-100 hover:bg-bg-secondary"
                     >
-                      <div className="p-2 border-b border-border-tertiary bg-bg-secondary/50 flex items-center gap-2">
-                        <Wrench className="w-3.5 h-3.5 text-primary" />
-                        <span className="label-small font-bold text-fg-tertiary uppercase tracking-wider">Insertar Herramienta</span>
-                      </div>
-                      <div className="max-h-48 overflow-y-auto p-1">
-                        {data.tools?.filter((t: Tool) => t.name.toLowerCase().includes(mentionMenu.filter)).length > 0 ? (
-                          data.tools
-                            .filter((t: Tool) => t.name.toLowerCase().includes(mentionMenu.filter))
-                            .map((tool: Tool) => (
-                              <Button
-                                key={tool.id}
-                                type="button"
-                                variant="Tertiary"
-                                size="s"
-                                onClick={() => {
-                                  const value = data.instructions || '';
-                                  const lastAt = value.lastIndexOf('@');
-                                  const newValue = value.substring(0, lastAt) + `[${tool.name}] ` + value.substring(lastAt + mentionMenu.filter.length + 1);
-                                  handleInputChange('instructions', newValue);
-                                  setMentionMenu(null);
-                                }}
-                                className="group w-full !min-h-0 justify-start rounded-lg border-0 px-3 py-2 font-normal shadow-none hover:bg-bg-secondary"
-                                iconLeft={
-                                  <div className="rounded-md bg-bg-tertiary p-1.5 transition-colors group-hover:bg-bg-primary">
-                                    <Wrench className="h-3.5 w-3.5 text-fg-tertiary" />
-                                  </div>
-                                }
-                              >
-                                <span className="label font-semibold text-fg-primary">{tool.name}</span>
-                              </Button>
-                            ))
-                        ) : (
-                          <div className="p-4 text-center">
-                            <p className="caption text-fg-tertiary">No se encontraron herramientas seleccionadas.</p>
-                          </div>
-                        )}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                      <Layout className="size-3.5 text-fg-quaternary" />
+                    </div>
+                  </div>
 
-              <div className="pt-4 border-t border-border-tertiary">
-                <Button
-                  type="button"
-                  variant="Tertiary"
-                  size="m"
-                  onClick={() => setIsSaveFieldsOpen(!isSaveFieldsOpen)}
-                  className="group w-full !min-h-0 justify-between rounded-none border-0 p-0 font-normal shadow-none"
-                  iconLeft={
-                    <Save className="h-4 w-4 shrink-0 text-fg-tertiary transition-colors group-hover:text-primary" />
-                  }
-                  iconRight={
-                    isSaveFieldsOpen ? (
-                      <ChevronDown className="h-4 w-4 shrink-0 text-fg-tertiary" />
-                    ) : (
-                      <ChevronRight className="h-4 w-4 shrink-0 text-fg-tertiary" />
-                    )
-                  }
-                >
-                  <span className="label font-bold uppercase text-fg-tertiary transition-colors group-hover:text-fg-primary">
-                    Consultar campos de información
-                  </span>
-                </Button>
+                  <AnimatePresence>
+                    {mentionMenu?.isOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="absolute left-[var(--spacing-m)] right-[var(--spacing-m)] top-full z-50 mt-1 overflow-hidden rounded-[var(--radius-m)] border border-border-tertiary bg-bg-primary shadow-xl"
+                      >
+                        <div className="flex items-center gap-2 border-b border-border-tertiary bg-bg-secondary/50 p-2">
+                          <Wrench className="size-3.5 text-primary" />
+                          <span className="label-small font-bold text-fg-tertiary">
+                            Insertar herramienta
+                          </span>
+                        </div>
+                        <div className="max-h-48 overflow-y-auto p-1">
+                          {data.tools?.filter((t: Tool) => t.name.toLowerCase().includes(mentionMenu.filter)).length >
+                          0 ? (
+                            data.tools
+                              .filter((t: Tool) => t.name.toLowerCase().includes(mentionMenu.filter))
+                              .map((tool: Tool) => (
+                                <Button
+                                  key={tool.id}
+                                  type="button"
+                                  variant="Tertiary"
+                                  size="s"
+                                  onClick={() => {
+                                    const value = data.instructions || '';
+                                    const lastAt = value.lastIndexOf('@');
+                                    const newValue =
+                                      value.substring(0, lastAt) +
+                                      `[${tool.name}] ` +
+                                      value.substring(lastAt + mentionMenu.filter.length + 1);
+                                    handleInputChange('instructions', newValue);
+                                    setMentionMenu(null);
+                                  }}
+                                  className="group w-full !min-h-0 justify-start rounded-lg border-0 px-3 py-2 font-normal shadow-none hover:bg-bg-secondary"
+                                  iconLeft={
+                                    <div className="rounded-md bg-bg-tertiary p-1.5 transition-colors group-hover:bg-bg-primary">
+                                      <Wrench className="size-3.5 text-fg-tertiary" />
+                                    </div>
+                                  }
+                                >
+                                  <span className="label font-semibold text-fg-primary">{tool.name}</span>
+                                </Button>
+                              ))
+                          ) : (
+                            <div className="p-4 text-center">
+                              <p className="caption text-fg-tertiary">No se encontraron herramientas seleccionadas.</p>
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </section>
 
-                <AnimatePresence>
+              <div className="border-b border-border-tertiary">
+                <CollapsibleSectionHeader
+                  title="Consultar campos de información"
+                  isOpen={isSaveFieldsOpen}
+                  onToggle={() => setIsSaveFieldsOpen(!isSaveFieldsOpen)}
+                />
+                <AnimatePresence initial={false}>
                   {isSaveFieldsOpen && (
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
                     >
-                      <div className="space-y-4 pt-4">
-                        <p className="caption text-fg-tertiary">
+                      <div className="flex flex-col gap-[var(--spacing-s)] px-[var(--spacing-m)] pb-[var(--spacing-m)] pt-0">
+                        <p className="label font-normal text-fg-quaternary">
                           Define qué información debe solicitar el agente al cliente.
                         </p>
 
-                        <div className="bg-primary/5 border border-primary/10 rounded-xl p-4 flex items-start gap-3">
-                          <div className="mt-0.5">
-                            <Info className="w-5 h-5 text-primary" />
-                          </div>
-                          <p className="label text-fg-primary">
-                            Marca como <span className="font-bold text-primary">obligatorio</span> los campos que el cliente debe proporcionar para avanzar.
+                        <div className="flex gap-4 rounded-[var(--radius-s)] border border-border-status-warning bg-bg-status-warning p-[var(--spacing-m)]">
+                          <AlertTriangle className="mt-0.5 size-6 shrink-0 text-fg-status-warning" />
+                          <p className="label text-fg-status-warning">
+                            Marca como <span className="font-bold">obligatorio</span> los campos que el cliente debe
+                            proporcionar para avanzar.
                           </p>
                         </div>
 
-
-                        <div className="flex items-center gap-3 px-1">
+                        <div className="flex items-center gap-3">
                           <Button
                             type="button"
                             variant="Tertiary"
@@ -370,16 +345,17 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                               const allRequired = data.saveFields?.every((f: SaveField) => f.type === 'required');
                               const newFields = data.saveFields?.map((f: SaveField) => ({
                                 ...f,
-                                type: allRequired ? 'optional' : 'required'
+                                type: allRequired ? 'optional' : 'required',
                               }));
                               handleInputChange('saveFields', newFields || []);
                             }}
                             className="group border-0 p-0 font-normal shadow-none hover:bg-transparent"
                             iconLeft={
-                              data.saveFields?.length > 0 && data.saveFields?.every((f: SaveField) => f.type === 'required') ? (
-                                <CheckSquare className="h-5 w-5 text-primary" />
+                              data.saveFields?.length > 0 &&
+                              data.saveFields?.every((f: SaveField) => f.type === 'required') ? (
+                                <CheckSquare className="size-5 text-primary" />
                               ) : (
-                                <Square className="h-5 w-5 text-fg-tertiary transition-colors group-hover:text-primary" />
+                                <Square className="size-5 text-fg-quaternary transition-colors group-hover:text-primary" />
                               )
                             }
                           >
@@ -387,26 +363,25 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                           </Button>
                         </div>
 
-                        {/* Fields List */}
-                        <div className="space-y-3">
+                        <div className="flex flex-col gap-3">
                           {data.saveFields?.length > 0 && (
-                            <div className="flex items-center gap-3 px-1 pb-2 border-b border-border-tertiary">
-                              <div className="flex-1 label-small font-bold text-fg-tertiary uppercase">Campo</div>
-                              <div className="w-24 text-center label-small font-bold text-fg-tertiary uppercase">Obligatorio</div>
-                              <div className="w-10" />
+                            <div className="flex items-center gap-3 border-b border-border-tertiary pb-2">
+                              <div className="flex-1 label font-medium text-fg-tertiary">Campo</div>
+                              <div className="w-24 text-center label font-medium text-fg-tertiary">Obligatorio</div>
+                              <div className="w-10 shrink-0" />
                             </div>
                           )}
 
                           {data.saveFields?.map((field: SaveField) => (
-                            <div key={field.id} className="flex items-center gap-3">
-                              <div className="flex-1 relative">
+                            <div key={field.id} className="flex items-center gap-[var(--spacing-s)]">
+                              <div className="relative min-w-0 flex-1">
                                 <Button
                                   type="button"
                                   variant="Secondary"
                                   size="m"
                                   onClick={() => setIsFieldDropdownOpen(field.id)}
-                                  className="label w-full justify-between rounded-xl border-border-tertiary bg-bg-primary font-normal text-fg-primary shadow-none hover:border-primary/50"
-                                  iconRight={<ChevronDown className="h-4 w-4 shrink-0 text-fg-tertiary" />}
+                                  className="label w-full justify-between rounded-[var(--radius-s)] border-border-secondary bg-bg-primary font-normal text-fg-primary shadow-none hover:border-primary/40"
+                                  iconRight={<ChevronDown className="size-4 shrink-0 text-fg-quaternary" />}
                                 >
                                   <span className="truncate">{field.label}</span>
                                 </Button>
@@ -414,44 +389,50 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                                 <AnimatePresence>
                                   {isFieldDropdownOpen === field.id && (
                                     <>
-                                      <div className="fixed inset-0 z-40" onClick={() => setIsFieldDropdownOpen(null)} />
+                                      <div
+                                        className="fixed inset-0 z-40"
+                                        onClick={() => setIsFieldDropdownOpen(null)}
+                                        aria-hidden
+                                      />
                                       <motion.div
-                                        initial={{ opacity: 0, y: 5 }}
+                                        initial={{ opacity: 0, y: 4 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: 5 }}
-                                        className="absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-xl border border-border-tertiary bg-bg-primary shadow-xl"
+                                        exit={{ opacity: 0, y: 4 }}
+                                        className="absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-[var(--radius-m)] border border-border-tertiary bg-bg-primary shadow-xl"
                                       >
-                                        <div className="p-2 border-b border-border-tertiary flex items-center gap-2">
-                                          <Search className="w-4 h-4 text-fg-tertiary" />
+                                        <div className="flex items-center gap-2 border-b border-border-tertiary p-2">
+                                          <Search className="size-4 text-fg-quaternary" />
                                           <input
                                             type="text"
                                             value={fieldSearch}
                                             onChange={(e) => setFieldSearch(e.target.value)}
                                             placeholder="Buscar campo..."
-                                            className="flex-1 bg-transparent border-none focus:ring-0 label p-0 text-fg-primary"
+                                            className="label min-w-0 flex-1 border-none bg-transparent p-0 text-fg-primary focus:ring-0"
                                             autoFocus
                                           />
                                         </div>
                                         <div className="max-h-48 overflow-y-auto">
-                                          {['Nombre', 'Apellido', 'Email', 'Teléfono', 'Empresa', 'Dirección', 'Ciudad', 'País'].filter(f => f.toLowerCase().includes(fieldSearch.toLowerCase())).map(f => (
-                                            <Button
-                                              key={f}
-                                              type="button"
-                                              variant="Tertiary"
-                                              size="s"
-                                              onClick={() => {
-                                                const newFields = data.saveFields.map((sf: SaveField) => 
-                                                  sf.id === field.id ? { ...sf, label: f } : sf
-                                                );
-                                                handleInputChange('saveFields', newFields);
-                                                setIsFieldDropdownOpen(null);
-                                                setFieldSearch('');
-                                              }}
-                                              className="w-full justify-start rounded-none border-0 px-4 py-2.5 font-normal shadow-none label text-fg-primary hover:bg-bg-secondary"
-                                            >
-                                              {f}
-                                            </Button>
-                                          ))}
+                                          {['Nombre', 'Apellido', 'Email', 'Teléfono', 'Empresa', 'Dirección', 'Ciudad', 'País']
+                                            .filter((f) => f.toLowerCase().includes(fieldSearch.toLowerCase()))
+                                            .map((f) => (
+                                              <Button
+                                                key={f}
+                                                type="button"
+                                                variant="Tertiary"
+                                                size="s"
+                                                onClick={() => {
+                                                  const newFields = (data.saveFields || []).map((sf: SaveField) =>
+                                                    sf.id === field.id ? { ...sf, label: f } : sf
+                                                  );
+                                                  handleInputChange('saveFields', newFields);
+                                                  setIsFieldDropdownOpen(null);
+                                                  setFieldSearch('');
+                                                }}
+                                                className="w-full justify-start rounded-none border-0 px-4 py-2.5 font-normal shadow-none label text-fg-primary hover:bg-bg-secondary"
+                                              >
+                                                {f}
+                                              </Button>
+                                            ))}
                                         </div>
                                       </motion.div>
                                     </>
@@ -459,48 +440,58 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                                 </AnimatePresence>
                               </div>
 
-                              <div className="w-24 flex justify-center">
-                                <button 
+                              <div className="flex w-[63px] shrink-0 justify-center">
+                                <button
+                                  type="button"
                                   onClick={() => {
-                                    const newFields = data.saveFields.map((f: SaveField) => 
-                                      f.id === field.id ? { ...f, type: f.type === 'required' ? 'optional' : 'required' } : f
+                                    const newFields = (data.saveFields || []).map((f: SaveField) =>
+                                      f.id === field.id
+                                        ? { ...f, type: f.type === 'required' ? 'optional' : 'required' }
+                                        : f
                                     );
                                     handleInputChange('saveFields', newFields);
                                   }}
-                                  className="p-2 hover:bg-bg-secondary rounded-lg transition-all"
+                                  className="rounded-lg p-2 transition-all hover:bg-bg-secondary"
                                 >
                                   {field.type === 'required' ? (
-                                    <CheckSquare className="w-5 h-5 text-primary" />
+                                    <CheckSquare className="size-5 text-primary" />
                                   ) : (
-                                    <Square className="w-5 h-5 text-fg-tertiary hover:text-primary transition-colors" />
+                                    <Square className="size-5 text-fg-quaternary transition-colors hover:text-primary" />
                                   )}
                                 </button>
                               </div>
 
-                              <button 
+                              <Button
+                                variant="Tertiary"
+                                size="s"
+                                type="button"
                                 onClick={() => removeSaveField(field.id)}
-                                className="p-2 text-fg-tertiary hover:text-fg-status-error transition-all"
+                                className="shrink-0 p-2"
                               >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
+                                <Trash2 className="size-4 text-fg-secondary" />
+                              </Button>
                             </div>
                           ))}
                         </div>
 
                         {isFieldDropdownOpen && <div className="h-40" />}
 
-                        <div className="flex justify-end pt-2 gap-3">
-                          <Button 
+                        <div className="flex gap-2 pt-1">
+                          <Button
                             variant="Secondary"
                             size="s"
+                            type="button"
+                            className="min-h-0 flex-1 justify-center shadow-none"
                             onClick={() => setIsFieldModalOpen(true)}
-                            iconLeft={<Plus size={14} />}
+                            iconLeft={<Plus className="size-4" />}
                           >
                             Crear campo
                           </Button>
-                          <Button 
-                            variant="Primary"
+                          <Button
+                            variant="Secondary"
                             size="s"
+                            type="button"
+                            className="min-h-0 flex-1 justify-center shadow-none"
                             onClick={() => {
                               const newField: SaveField = {
                                 id: Math.random().toString(36).substr(2, 9),
@@ -511,7 +502,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                               };
                               handleInputChange('saveFields', [...(data.saveFields || []), newField]);
                             }}
-                            iconLeft={<Plus size={14} />}
+                            iconLeft={<Plus className="size-4" />}
                           >
                             Agregar campo
                           </Button>
@@ -522,50 +513,34 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                 </AnimatePresence>
               </div>
 
-              <div className="pt-4 border-t border-border-tertiary">
-                <Button
-                  type="button"
-                  variant="Tertiary"
-                  size="m"
-                  onClick={() => setIsAdvancedOpen(!isAdvancedOpen)}
-                  className="group w-full !min-h-0 justify-between rounded-none border-0 p-0 font-normal shadow-none"
-                  iconLeft={
-                    <Settings className="h-4 w-4 shrink-0 text-fg-tertiary transition-colors group-hover:text-primary" />
-                  }
-                  iconRight={
-                    isAdvancedOpen ? (
-                      <ChevronDown className="h-4 w-4 shrink-0 text-fg-tertiary" />
-                    ) : (
-                      <ChevronRight className="h-4 w-4 shrink-0 text-fg-tertiary" />
-                    )
-                  }
-                >
-                  <span className="label uppercase text-fg-tertiary transition-colors group-hover:text-fg-primary">
-                    Configuración avanzada
-                  </span>
-                </Button>
-                
-                <AnimatePresence>
+              <div className="border-b border-border-tertiary">
+                <CollapsibleSectionHeader
+                  title="Configuración avanzada"
+                  isOpen={isAdvancedOpen}
+                  onToggle={() => setIsAdvancedOpen(!isAdvancedOpen)}
+                />
+                <AnimatePresence initial={false}>
                   {isAdvancedOpen && (
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      className={isAdvancedOpen ? "" : "overflow-hidden"}
+                      className="overflow-hidden"
                     >
-                      <div className="space-y-4 pt-4">
-                        <div className="space-y-1.5">
-                          <label className="label text-fg-tertiary">Modelo LLM</label>
+                      <div className="space-y-2 px-[var(--spacing-m)] pb-[var(--spacing-m)] pt-0">
+                        <label className="label font-medium text-fg-tertiary">Modelo</label>
+                        <div className="relative">
                           <select
                             value={data.llm || 'gemini-pro'}
                             onChange={(e) => handleInputChange('llm', e.target.value)}
-                            className="w-full bg-bg-secondary border border-border-tertiary rounded-lg px-3 py-2 caption text-fg-primary focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
+                            className={`${formFieldBase} appearance-none pr-10`}
                           >
                             <option value="gemini-pro">Gemini 1.5 Pro</option>
                             <option value="gemini-flash">Gemini 1.5 Flash</option>
                             <option value="gpt-4">GPT-4 Turbo</option>
                             <option value="haiku">Claude Haiku</option>
                           </select>
+                          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-fg-quaternary" />
                         </div>
                       </div>
                     </motion.div>
@@ -581,115 +556,98 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="space-y-8"
             >
-              {/* Documents Section */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 px-1">
-                  <FileText className="w-4 h-4 text-fg-tertiary" />
-                  <h3 className="label font-bold text-fg-tertiary uppercase tracking-wider">Documentos</h3>
-                </div>
-                
-                <Button
-                  onClick={() => setIsFileModalOpen(true)}
-                  variant="Primary"
-                  size="m"
-                  className="w-full"
-                  iconLeft={<Plus size={16} />}
-                >
-                  Seleccionar o cargar archivo
-                </Button>
-                
-                <div className="space-y-2">
-                  {data.knowledgeBase && data.knowledgeBase.length > 0 ? (
-                    data.knowledgeBase.map((doc: any, idx: number) => (
-                      <div key={idx} className="flex items-center justify-between p-3 bg-bg-secondary rounded-xl border border-border-tertiary group hover:border-primary/30 transition-all">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-lg bg-bg-tertiary flex items-center justify-center">
-                            <FileText className="w-4 h-4 text-fg-tertiary" />
+              <PanelSection title="Documentos">
+                <div className="flex flex-col gap-[var(--spacing-s)]">
+                  <Button
+                    type="button"
+                    onClick={() => setIsFileModalOpen(true)}
+                    variant="Primary"
+                    size="m"
+                    className="w-full"
+                    iconLeft={<Plus className="size-4" />}
+                  >
+                    Seleccionar o cargar archivo
+                  </Button>
+
+                  <div className="flex flex-col gap-2">
+                    {data.knowledgeBase && data.knowledgeBase.length > 0 ? (
+                      data.knowledgeBase.map((doc: { name: string; size?: string }, idx: number) => (
+                        <div
+                          key={idx}
+                          className="group flex items-center justify-between rounded-[var(--radius-m)] border border-border-tertiary bg-bg-secondary p-3 transition-all hover:border-primary/30"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="flex size-8 items-center justify-center rounded-lg bg-bg-tertiary">
+                              <FileText className="size-4 text-fg-quaternary" />
+                            </div>
+                            <div>
+                              <p className="label font-medium text-fg-primary">{doc.name}</p>
+                              {doc.size ? <p className="label-small text-fg-quaternary">{doc.size}</p> : null}
+                            </div>
                           </div>
-                          <div>
-                            <p className="label font-bold text-fg-primary">{doc.name}</p>
-                            <p className="label-small text-fg-tertiary">{doc.size}</p>
+                          <div className="flex items-center gap-1">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newKB = data.knowledgeBase.filter((_: unknown, i: number) => i !== idx);
+                                handleInputChange('knowledgeBase', newKB);
+                              }}
+                              className="rounded-lg p-1.5 text-fg-status-error opacity-0 transition-all hover:bg-bg-status-error/10 group-hover:opacity-100"
+                              title="Eliminar"
+                            >
+                              <Trash2 className="size-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              className="rounded-lg p-1.5 text-fg-quaternary hover:bg-bg-tertiary"
+                            >
+                              <MoreVertical className="size-4" />
+                            </button>
                           </div>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <button 
-                            onClick={() => {
-                              const newKB = data.knowledgeBase.filter((_: any, i: number) => i !== idx);
-                              handleInputChange('knowledgeBase', newKB);
-                            }}
-                            className="p-1.5 hover:bg-bg-status-error/10 text-fg-status-error rounded-lg opacity-0 group-hover:opacity-100 transition-all"
-                            title="Eliminar"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                          <button className="p-1.5 hover:bg-bg-tertiary rounded-lg text-fg-tertiary">
-                            <MoreVertical className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="caption text-fg-tertiary px-1 italic">No hay documentos seleccionados.</p>
-                  )}
+                      ))
+                    ) : (
+                      <p className="label font-normal italic text-fg-quaternary">No hay documentos seleccionados.</p>
+                    )}
+                  </div>
                 </div>
-              </div>
+              </PanelSection>
 
-              {/* Dynamic Tables Section */}
-              <div className="space-y-4 pt-4 border-t border-border-tertiary">
-                <div className="flex items-center gap-2 px-1">
-                  <Table className="w-4 h-4 text-fg-tertiary" />
-                  <h3 className="label font-bold text-fg-tertiary uppercase tracking-wider">Tabla dinámica</h3>
-                </div>
-
-                <div className="space-y-4">
-                  <p className="caption text-fg-tertiary">
+              <PanelSection title="Tabla dinámica">
+                <div className="flex flex-col gap-[var(--spacing-m)]">
+                  <p className="label font-normal text-fg-quaternary">
                     Selecciona la tabla que servirá como base de conocimiento para responder las consultas de tus clientes.
                   </p>
 
-                  <div className="space-y-2">
-                    <label className="label-small text-fg-tertiary uppercase">Seleccionar tabla*</label>
+                  <div className="flex flex-col gap-2">
+                    <label className="label font-medium text-fg-tertiary">Seleccionar tabla*</label>
                     <div className="relative">
                       <select
                         value={data.dynamicTableId || ''}
                         onChange={(e) => handleInputChange('dynamicTableId', e.target.value)}
-                        className="w-full bg-bg-secondary border border-border-tertiary rounded-xl px-4 py-3 caption text-fg-primary appearance-none focus:ring-1 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                        className={`${formFieldBase} appearance-none pr-10`}
                       >
                         <option value="">Ninguna tabla seleccionada</option>
-                        {MOCK_TABLES.map(table => (
-                          <option key={table.id} value={table.id}>{table.name}</option>
+                        {MOCK_TABLES.map((table) => (
+                          <option key={table.id} value={table.id}>
+                            {table.name}
+                          </option>
                         ))}
                       </select>
-                      <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-tertiary pointer-events-none" />
+                      <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-fg-quaternary" />
                     </div>
                   </div>
 
                   {data.dynamicTableId && (
-                    <div className="pt-2">
-                      <Button
-                        type="button"
-                        variant="Tertiary"
-                        size="s"
-                        onClick={() => setIsSqlAdvancedOpen(!isSqlAdvancedOpen)}
-                        className="group !min-h-0 border-0 p-0 font-normal shadow-none"
-                        iconLeft={
-                          <Settings className="h-3.5 w-3.5 shrink-0 text-fg-tertiary transition-colors group-hover:text-primary" />
-                        }
-                        iconRight={
-                          isSqlAdvancedOpen ? (
-                            <ChevronDown className="h-3 w-3 shrink-0 text-fg-tertiary" />
-                          ) : (
-                            <ChevronRight className="h-3 w-3 shrink-0 text-fg-tertiary" />
-                          )
-                        }
-                      >
-                        <span className="label-small uppercase text-fg-tertiary transition-colors group-hover:text-fg-primary">
-                          Configuración avanzada
-                        </span>
-                      </Button>
-                      
-                      <AnimatePresence>
+                    <div className="pt-1">
+                      <CollapsibleSectionHeader
+                        title="Configuración avanzada"
+                        isOpen={isSqlAdvancedOpen}
+                        onToggle={() => setIsSqlAdvancedOpen(!isSqlAdvancedOpen)}
+                        flush
+                      />
+                      <AnimatePresence initial={false}>
                         {isSqlAdvancedOpen && (
                           <motion.div
                             initial={{ height: 0, opacity: 0 }}
@@ -697,19 +655,17 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                             exit={{ height: 0, opacity: 0 }}
                             className="overflow-hidden"
                           >
-                            <div className="space-y-3 pt-3">
-                              <div className="space-y-1.5">
-                                <label className="label-small text-fg-tertiary uppercase">Prompt SQL</label>
-                                <textarea
-                                  value={data.sqlPrompt || ''}
-                                  onChange={(e) => handleInputChange('sqlPrompt', e.target.value)}
-                                  placeholder="Escribe aquí las instrucciones SQL personalizadas..."
-                                  className="w-full bg-bg-secondary border border-border-tertiary rounded-xl px-4 py-3 caption text-fg-primary focus:ring-1 focus:ring-primary/20 focus:border-primary outline-none transition-all min-h-[100px] resize-none"
-                                />
-                                <p className="caption-small text-fg-tertiary">
-                                  Define reglas específicas para las consultas SQL de esta tabla.
-                                </p>
-                              </div>
+                            <div className="space-y-2 pb-[var(--spacing-s)] pt-0">
+                              <label className="label font-medium text-fg-tertiary">Prompt SQL</label>
+                              <textarea
+                                value={data.sqlPrompt || ''}
+                                onChange={(e) => handleInputChange('sqlPrompt', e.target.value)}
+                                placeholder="Escribe aquí las instrucciones SQL personalizadas..."
+                                className={`${formFieldBase} min-h-[100px] resize-none`}
+                              />
+                              <p className="caption text-fg-quaternary">
+                                Define reglas específicas para las consultas SQL de esta tabla.
+                              </p>
                             </div>
                           </motion.div>
                         )}
@@ -717,7 +673,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     </div>
                   )}
                 </div>
-              </div>
+              </PanelSection>
             </motion.div>
           )}
 
@@ -727,158 +683,133 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="space-y-8"
             >
-              {/* Integrations Tools */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 px-1">
-                  <Wrench className="w-4 h-4 text-fg-tertiary" />
-                  <h3 className="label font-bold text-fg-tertiary uppercase tracking-wider">Integraciones</h3>
+              <PanelSection title="Integraciones">
+                <div className="flex flex-col gap-[var(--spacing-s)]">
+                  <Button
+                    type="button"
+                    onClick={() => setIsToolModalOpen(true)}
+                    variant="Primary"
+                    size="m"
+                    className="w-full"
+                    iconLeft={<Plus className="size-4" />}
+                  >
+                    Añadir Integración
+                  </Button>
+
+                  <div className="flex flex-col gap-3">
+                    {data.tools?.filter((t: Tool) => t.toolkitId !== 'http').length > 0 ? (
+                      data.tools
+                        .filter((t: Tool) => t.toolkitId !== 'http')
+                        .map((tool: Tool) => (
+                          <IntegrationAccordionItem
+                            key={tool.id}
+                            tool={tool}
+                            onDelete={() => {
+                              const newTools = data.tools.filter((t: Tool) => t.id !== tool.id);
+                              handleInputChange('tools', newTools);
+                            }}
+                          />
+                        ))
+                    ) : (
+                      <p className="label font-normal italic text-fg-quaternary">No hay integraciones seleccionadas.</p>
+                    )}
+                  </div>
                 </div>
+              </PanelSection>
 
-                <Button
-                  onClick={() => setIsToolModalOpen(true)}
-                  variant="Primary"
-                  size="m"
-                  className="w-full"
-                  iconLeft={<Plus size={16} />}
-                >
-                  Añadir Integración
-                </Button>
+              <PanelSection title="HTTP Request">
+                <div className="flex flex-col gap-[var(--spacing-s)]">
+                  <Button
+                    type="button"
+                    onClick={() => setIsAddingHttpTool(true)}
+                    variant="Primary"
+                    size="m"
+                    className="w-full"
+                    iconLeft={<Plus className="size-4" />}
+                  >
+                    Añadir Petición HTTP
+                  </Button>
 
-                <div className="space-y-3">
-                  {data.tools?.filter((t: Tool) => t.toolkitId !== 'http').length > 0 ? (
-                    data.tools
-                      .filter((t: Tool) => t.toolkitId !== 'http')
-                      .map((tool: Tool) => (
-                        <IntegrationAccordionItem 
-                          key={tool.id} 
-                          tool={tool} 
-                          onDelete={() => {
-                            const newTools = data.tools.filter((t: Tool) => t.id !== tool.id);
-                            handleInputChange('tools', newTools);
-                          }} 
-                        />
-                      ))
-                  ) : (
-                    <p className="caption text-fg-tertiary px-1 italic">No hay integraciones seleccionadas.</p>
-                  )}
+                  <div className="flex flex-col gap-3">
+                    {data.tools?.filter((t: Tool) => t.toolkitId === 'http').length > 0 ? (
+                      data.tools
+                        .filter((t: Tool) => t.toolkitId === 'http')
+                        .map((tool: Tool) => (
+                          <IntegrationAccordionItem
+                            key={tool.id}
+                            tool={tool}
+                            onDelete={() => {
+                              const newTools = data.tools.filter((t: Tool) => t.id !== tool.id);
+                              handleInputChange('tools', newTools);
+                            }}
+                          />
+                        ))
+                    ) : (
+                      <p className="label font-normal italic text-fg-quaternary">
+                        No hay peticiones HTTP configuradas.
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
+              </PanelSection>
 
-              {/* HTTP Tools */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 px-1">
-                  <Globe className="w-4 h-4 text-fg-tertiary" />
-                  <h3 className="label font-bold text-fg-tertiary uppercase tracking-wider">HTTP Request</h3>
-                </div>
-
-                <Button
-                  onClick={() => setIsAddingHttpTool(true)}
-                  variant="Primary"
-                  size="m"
-                  className="w-full"
-                  iconLeft={<Plus size={16} />}
-                >
-                  Añadir Petición HTTP
-                </Button>
-
-                <div className="space-y-3">
-                  {data.tools?.filter((t: Tool) => t.toolkitId === 'http').length > 0 ? (
-                    data.tools
-                      .filter((t: Tool) => t.toolkitId === 'http')
-                      .map((tool: Tool) => (
-                        <IntegrationAccordionItem 
-                          key={tool.id} 
-                          tool={tool} 
-                          onDelete={() => {
-                            const newTools = data.tools.filter((t: Tool) => t.id !== tool.id);
-                            handleInputChange('tools', newTools);
-                          }} 
-                        />
-                      ))
-                  ) : (
-                    <p className="caption text-fg-tertiary px-1 italic">No hay peticiones HTTP configuradas.</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Code Component Placeholder */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 px-1">
-                  <Code className="w-4 h-4 text-fg-tertiary" />
-                  <h3 className="label font-bold text-fg-tertiary uppercase tracking-wider">Código</h3>
-                </div>
-                <div className="p-6 bg-bg-secondary border border-dashed border-border-tertiary rounded-2xl flex flex-col items-center justify-center text-center space-y-2 opacity-60 grayscale">
-                  <div className="p-3 bg-bg-tertiary rounded-xl">
-                    <Code className="w-6 h-6 text-fg-tertiary" />
+              <PanelSection title="Código">
+                <div className="flex flex-col items-center justify-center gap-2 rounded-[var(--radius-m)] border border-dashed border-border-tertiary bg-bg-secondary p-6 text-center opacity-60 grayscale">
+                  <div className="rounded-xl bg-bg-tertiary p-3">
+                    <Code className="size-6 text-fg-quaternary" />
                   </div>
                   <div>
-                    <p className="label font-bold text-fg-tertiary uppercase tracking-widest">Próximamente</p>
-                    <p className="caption text-fg-tertiary">Ejecuta scripts personalizados en el flujo.</p>
+                    <p className="label font-medium text-fg-quaternary">Próximamente</p>
+                    <p className="caption text-fg-quaternary">Ejecuta scripts personalizados en el flujo.</p>
                   </div>
                 </div>
-              </div>
+              </PanelSection>
             </motion.div>
           )}
 
           {isEnd && (
-            <motion.div
-              key="end"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-4"
-            >
-              <div className="space-y-1.5">
-                <label className="label text-fg-tertiary">Etiqueta de Finalización</label>
+            <motion.div key="end" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+              <PanelSection title="Etiqueta de Finalización">
                 <input
                   type="text"
                   value={data.label || ''}
                   onChange={(e) => handleInputChange('label', e.target.value)}
-                  className="w-full bg-bg-secondary border border-border-tertiary rounded-lg px-3 py-2 caption text-fg-primary focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
+                  className={formFieldBase}
                   placeholder="Ej: Resuelto, Escalado..."
                 />
-              </div>
+              </PanelSection>
             </motion.div>
           )}
 
           {isEdge && (
-            <motion.div
-              key="edge"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-4"
-            >
-              <div className="space-y-1.5">
-                <label className="label text-fg-tertiary">Nombre</label>
+            <motion.div key="edge" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+              <PanelSection title="Nombre">
                 <input
                   type="text"
                   value={data.name || ''}
                   onChange={(e) => handleInputChange('name', e.target.value)}
-                  className="w-full bg-bg-secondary border border-border-tertiary rounded-lg px-3 py-2 caption text-fg-primary focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
+                  className={formFieldBase}
                   placeholder="Ej: Transferir a Soporte"
                 />
-              </div>
-              <div className="space-y-1.5">
-                <label className="label text-fg-tertiary">
-                  {data.isTimeout ? 'Tiempo sin respuesta' : 'Condición'}
-                </label>
+              </PanelSection>
+              <PanelSection title={data.isTimeout ? 'Tiempo sin respuesta' : 'Condición'}>
                 {data.isTimeout ? (
-                  <div className="space-y-3">
-                    <p className="caption text-fg-tertiary italic">
+                  <div className="flex flex-col gap-3">
+                    <p className="label font-normal italic text-fg-quaternary">
                       Define cuánto tiempo debe pasar sin respuesta del usuario para que se active esta rama.
                     </p>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <input
                         type="number"
                         value={data.timeoutValue || 10}
                         onChange={(e) => {
-                          const val = parseInt(e.target.value) || 0;
+                          const val = parseInt(e.target.value, 10) || 0;
                           const unit = data.timeoutUnit || 'min';
                           onUpdate({ ...data, timeoutValue: val, condition: `Sin respuesta (${val} ${unit})` });
                         }}
-                        className="w-20 bg-bg-secondary border border-border-tertiary rounded-lg px-3 py-2 caption text-fg-primary focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
-                        min="1"
+                        className={`${formFieldBase} w-20`}
+                        min={1}
                       />
                       <select
                         value={data.timeoutUnit || 'min'}
@@ -887,7 +818,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                           const val = data.timeoutValue || 10;
                           onUpdate({ ...data, timeoutUnit: unit, condition: `Sin respuesta (${val} ${unit})` });
                         }}
-                        className="bg-bg-secondary border border-border-tertiary rounded-lg px-3 py-2 caption text-fg-primary focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all"
+                        className={formFieldBase}
                       >
                         <option value="min">Minutos</option>
                         <option value="h">Horas</option>
@@ -899,11 +830,11 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
                     value={data.condition || ''}
                     onChange={(e) => handleInputChange('condition', e.target.value)}
                     rows={4}
-                    className="w-full bg-bg-secondary border border-border-tertiary rounded-lg px-3 py-2 caption text-fg-primary focus:ring-1 focus:ring-primary/20 focus:border-primary transition-all resize-none"
+                    className={`${formFieldBase} resize-none`}
                     placeholder="Ej: El usuario está molesto..."
                   />
                 )}
-              </div>
+              </PanelSection>
             </motion.div>
           )}
         </AnimatePresence>

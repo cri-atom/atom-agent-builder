@@ -55,8 +55,7 @@
     font-size: var(--font-size-heading); 
     font-weight: var(--font-weight-medium); 
     line-height: var(--line-height-heading); 
-    text-transform: uppercase; 
-    letter-spacing: var(--tracking-wider); 
+    letter-spacing: var(--letter-spacing-heading); 
   }
   .body-lg { 
     font-size: var(--font-size-body); 
@@ -82,14 +81,13 @@
     font-size: var(--font-size-label); 
     font-weight: var(--font-weight-medium); 
     line-height: var(--line-height-label); 
-    text-transform: uppercase; 
-    letter-spacing: var(--tracking-wider); 
+    letter-spacing: var(--letter-spacing-label); 
   }
   .label-small { 
     font-size: var(--font-size-label-small); 
     font-weight: var(--font-weight-medium); 
     line-height: var(--line-height-label-small); 
-    letter-spacing: var(--tracking-widest); 
+    letter-spacing: var(--letter-spacing-label-small); 
   }
   .footnote { 
     font-size: var(--font-size-footnote); 
