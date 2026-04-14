@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Settings, Wrench, Wand2, Plus, Trash2, ChevronDown, ChevronRight, Layout, FileText, MoreVertical, Search, CheckSquare, Square, Globe, Code, MessageSquare, AlertTriangle } from 'lucide-react';
+import { X, Settings, Wrench, Wand2, Plus, Trash2, ChevronDown, ChevronRight, Layout, FileText, MoreVertical, Search, CheckSquare, Square, Globe, Code, MessageSquare, AlertTriangle, Bot } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { FileSelectionModal } from './FileSelectionModal';
 import { ToolSelectionModal } from './ToolSelectionModal';
@@ -180,7 +180,7 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
       <header className="flex items-center gap-[var(--spacing-s)] border-b border-border-tertiary px-[var(--spacing-m)] py-[var(--spacing-s)]">
         {isAgent ? (
           <>
-            <MessageSquare className="size-6 shrink-0 text-fg-quaternary" aria-hidden />
+            <Bot className="size-6 shrink-0 text-fg-quaternary" aria-hidden />
             <input
               type="text"
               value={data.label || ''}

@@ -20,10 +20,13 @@ interface GlobalConfigPanelProps {
 }
 
 const formTextareaClass =
-  'w-full min-h-[120px] resize-none rounded-[var(--radius-s)] border border-border-secondary bg-bg-primary px-[var(--spacing-sm)] py-[var(--spacing-s)] caption text-fg-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20';
+  'w-full min-h-[120px] resize-none rounded-[var(--radius-s)] border border-border-secondary bg-bg-primary px-[var(--spacing-sm)] py-[var(--spacing-s)] caption text-fg-primary outline-none transition-colors focus:border-[var(--color-border-interactive-secondary-focused)] focus:ring-2 focus:ring-[var(--color-alpha-400)]';
 
 const formSelectClass =
-  'w-full appearance-none rounded-[var(--radius-s)] border border-border-secondary bg-bg-primary px-[var(--spacing-sm)] py-[var(--spacing-s)] caption text-fg-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20';
+  'w-full appearance-none rounded-[var(--radius-s)] border border-border-secondary bg-bg-primary px-[var(--spacing-sm)] py-[var(--spacing-s)] caption text-fg-primary outline-none transition-colors focus:border-[var(--color-border-interactive-secondary-focused)] focus:ring-2 focus:ring-[var(--color-alpha-400)]';
+
+const formInputClass =
+  'w-full rounded-[var(--radius-s)] border border-border-secondary bg-bg-primary px-[var(--spacing-sm)] py-[var(--spacing-s)] caption text-fg-primary outline-none transition-colors focus:border-[var(--color-border-interactive-secondary-focused)] focus:ring-2 focus:ring-[var(--color-alpha-400)]';
 
 export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
   config,
@@ -113,6 +116,7 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
           <GlobalConfigOpenButton onClick={onToggle} className="absolute left-0 top-0 z-40" />
         )}
 
+        {/* Global Config Panel */}
         <motion.div
           initial={false}
           animate={{
@@ -126,12 +130,15 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
             <>
               <header className="flex shrink-0 items-center gap-[var(--spacing-s)] border-b border-border-tertiary px-[var(--spacing-m)] py-[var(--spacing-s)]">
                 <h2 className="min-w-0 flex-1 caption font-bold text-fg-primary">Configuración global</h2>
-                <Button variant="Tertiary" size="s" type="button" onClick={onToggle} className="shrink-0 p-1">
+                <Button variant="Tertiary" size="s" type="button" onClick={onToggle}>
                   <X className="size-4 text-fg-secondary" />
                 </Button>
               </header>
 
+              {/* Scrollable content body del panel */}
               <div className="custom-scrollbar min-h-0 min-w-0 flex-1 overflow-y-auto">
+
+                {/* Seccion Instrucciones generales */}
                 <PanelSection title="Instrucciones generales">
                   <textarea
                     value={config.generalInstructions}
@@ -141,6 +148,7 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
                   />
                 </PanelSection>
 
+                {/* Seccion Etapas */}
                 <PanelSection title="Etapas" contentClassName="flex flex-col gap-[var(--spacing-s)]">
                   <PipelineTypeTabs
                     value={config.pipelineType}
@@ -175,7 +183,7 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
                                   onChange={(e) =>
                                     updateStage(stage.id, { type: e.target.value as GlobalStage['type'] })
                                   }
-                                  className={`${formSelectClass} pr-8`}
+                                  className={formSelectClass}
                                 >
                                   {STAGE_ORDER.map((type) => {
                                     const isUsed =
@@ -197,7 +205,7 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
                                 type="text"
                                 value={stage.name}
                                 onChange={(e) => updateStage(stage.id, { name: e.target.value })}
-                                className="w-full rounded-[var(--radius-s)] border border-border-secondary bg-bg-primary px-[var(--spacing-sm)] py-[var(--spacing-s)] caption text-fg-primary outline-none focus:border-primary focus:ring-1 focus:ring-primary/20"
+                                className={formInputClass}
                                 placeholder="Nombre de la etapa"
                               />
                             </div>
@@ -209,7 +217,7 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
                               type="text"
                               value={stage.condition}
                               onChange={(e) => updateStage(stage.id, { condition: e.target.value })}
-                              className="w-full rounded-[var(--radius-s)] border border-border-secondary bg-bg-primary px-[var(--spacing-sm)] py-[var(--spacing-s)] caption text-fg-primary outline-none focus:border-primary focus:ring-1 focus:ring-primary/20"
+                              className={formInputClass}
                               placeholder="Ej: Si el usuario muestra interés..."
                             />
                           </div>
@@ -223,19 +231,24 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
                       </PanelEmptyState>
                     )}
 
-                    <Button
-                      type="button"
-                      variant="Secondary"
-                      size="s"
-                      onClick={addStage}
-                      className="w-full justify-center shadow-none"
-                      iconLeft={<Plus className="size-4" />}
-                    >
-                      {addStageLabel}
-                    </Button>
+                    {/* Button Agregar stage */}
+                    <div className="flex justify-center">
+                      <Button
+                        type="button"
+                        variant="Secondary"
+                        size="s"
+                        onClick={addStage}
+                        className="w-full"
+                        iconLeft={<Plus className="size-4" />}
+                      >
+                        {addStageLabel}
+                      </Button>
+                    </div>
+
                   </div>
                 </PanelSection>
 
+                {/* Seccion Campos a identificar y guardar */}
                 <div className="border-b border-border-tertiary">
                   <CollapsibleSectionHeader
                     title="Campos a identificar y guardar"
@@ -248,7 +261,6 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden"
                       >
                         <div className="flex flex-col gap-[var(--spacing-s)] px-[var(--spacing-m)] pb-[var(--spacing-m)] pt-0">
                           <p className="label font-normal text-fg-quaternary">
@@ -265,7 +277,9 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
                             )}
 
                             {config.saveFields?.map((field: SaveField) => (
+                              // Field row. Todo el select con botton trash
                               <div key={field.id} className="flex items-center gap-3">
+                                {/* Select */}
                                 <div className="relative min-w-0 flex-1">
                                   <Button
                                     type="button"
@@ -278,6 +292,7 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
                                     <span className="truncate">{field.label}</span>
                                   </Button>
 
+                                  {/* Dropdown Seleccionar campos */}
                                   <AnimatePresence>
                                     {isFieldDropdownOpen === field.id && (
                                       <>
@@ -299,7 +314,7 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
                                               value={fieldSearch}
                                               onChange={(e) => setFieldSearch(e.target.value)}
                                               placeholder="Buscar campo..."
-                                              className="label min-w-0 flex-1 border-none bg-transparent p-0 text-fg-primary focus:ring-0"
+                                              className={formInputClass}
                                               autoFocus
                                             />
                                           </div>
@@ -332,6 +347,7 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
                                   </AnimatePresence>
                                 </div>
 
+                                {/* Button Trash */}
                                 <button
                                   type="button"
                                   onClick={() => removeSaveField(field.id)}
@@ -343,18 +359,20 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
                             ))}
                           </div>
 
-                          <div className="flex justify-end pt-1">
+                          {/* Button Agregar campo */}
+                          <div className="flex justify-center">
                             <Button
                               type="button"
                               variant="Secondary"
                               size="s"
                               onClick={addSaveField}
-                              className="shadow-none"
                               iconLeft={<Plus className="size-4" />}
+                              className="w-full"
                             >
                               Agregar campo
                             </Button>
                           </div>
+
                         </div>
                       </motion.div>
                     )}
@@ -366,7 +384,7 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
                     <select
                       value={config.timezone}
                       onChange={(e) => handleUpdate('timezone', e.target.value)}
-                      className={`${formSelectClass} pr-10`}
+                      className={formSelectClass}
                     >
                       <option value="Argentina - Buenos Aires">Argentina - Buenos Aires</option>
                       <option value="USA - New York">USA - New York</option>
@@ -381,15 +399,6 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
           )}
         </motion.div>
 
-        <div className="absolute left-full top-1/2 z-30 -translate-y-1/2">
-          <button
-            type="button"
-            onClick={onToggle}
-            className="flex h-12 w-6 items-center justify-center rounded-r-[var(--radius-m)] border border-border-tertiary border-l-0 bg-bg-primary text-fg-quaternary shadow-md transition-all hover:bg-bg-secondary hover:text-primary"
-          >
-            {isOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
-          </button>
-        </div>
       </div>
     </div>
   );
