@@ -9,6 +9,8 @@
 @import "./styles/tokens/radius/radius.css";
 @import "./styles/tokens/spacing/spacing.css";
 @import "./styles/tokens/breakpoints/breakpoints.css";
+@import "./styles/tokens/elevations/elevations.css";
+@import "./styles/components/flow-canvas-nodes.css";
 @import "./styles/components/button.css";
 @import "./styles/components/button-classes.css";
 @import "./styles/components/table.css";

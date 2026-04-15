@@ -1,11 +1,10 @@
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useState, useRef, useEffect } from 'react';
 import { Handle, Position } from 'reactflow';
-import { Play, Bot, CheckCircle2, AlertCircle, Wrench, Database, Save, Plus, Trash2, User, Check, MessageSquare, Copy, Sparkles } from 'lucide-react';
+import { Bot, Wrench, Database, Save, Plus, Trash2, Copy, Sparkles, Flag, GitBranch } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useFlowContext } from '../context/FlowContext';
-import { Button } from './Button';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -13,247 +12,383 @@ function cn(...inputs: ClassValue[]) {
 
 export const StartNode = memo(({ id, data, selected }: any) => {
   const [showMenu, setShowMenu] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const addMenuRef = useRef<HTMLDivElement>(null);
   const { onAddNode, edges } = useFlowContext();
   const hasConnection = edges.some(e => e.source === id);
+  const emphasized = selected || isHovered;
+
+  useEffect(() => {
+    if (!showMenu) return;
+    const onPointerDown = (e: MouseEvent) => {
+      if (!addMenuRef.current?.contains(e.target as Node)) {
+        setShowMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', onPointerDown, true);
+    return () => document.removeEventListener('mousedown', onPointerDown, true);
+  }, [showMenu]);
 
   return (
-    <div className="relative group cursor-pointer">
-      <div className={cn(
-        "bg-white border rounded-full px-4 py-2 min-w-[100px] flex items-center justify-center gap-2 transition-all relative",
-        selected ? "border-primary ring-1 ring-primary" : "border-border-tertiary"
-      )}>
-        <MessageSquare className="w-3.5 h-3.5 text-fg-tertiary" />
-        <p className="label font-semibold text-fg-primary">Inicio</p>
-        <Handle type="source" position={Position.Bottom} className="!bg-border-tertiary !w-2 !h-2 !-bottom-1" />
+    <div
+      className="relative cursor-pointer"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div
+        className={cn(
+          'flow-canvas-node__surface relative flex min-w-[7.5rem] flex-col items-stretch',
+          emphasized && 'flow-canvas-node__surface--emphasized'
+        )}
+      >
+        <div className="flex items-center gap-[var(--spacing-m)] py-[var(--spacing-sm)] pl-[var(--spacing-m)] pr-[var(--spacing-sm)]">
+          <Flag className="h-4 w-4 shrink-0 text-fg-quaternary" aria-hidden />
+          <p className="caption font-medium text-fg-primary">Inicio</p>
+        </div>
+        <Handle
+          type="source"
+          position={Position.Bottom}
+          className="!bg-border-tertiary !h-2 !w-2 !-bottom-1"
+        />
       </div>
-      
+
       {!hasConnection && (
-        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 translate-y-full z-30">
-          {!showMenu ? (
-            <button 
-              onClick={(e) => { e.stopPropagation(); setShowMenu(true); }}
-              className="w-7 h-7 rounded-full bg-white border border-border-tertiary text-fg-tertiary flex items-center justify-center shadow-md hover:scale-110 transition-transform hover:text-fg-primary hover:border-primary/50"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
-          ) : (
-            <div className="bg-bg-primary border border-border-tertiary rounded-xl shadow-xl p-1 flex flex-col gap-1 animate-in fade-in zoom-in duration-200 min-w-[90px]">
-              <Button
-                type="button"
-                variant="Tertiary"
-                size="xs"
-                onClick={(e) => { e.stopPropagation(); onAddNode('agent', id); setShowMenu(false); }}
-                className="group/item w-full !min-h-0 justify-start rounded-lg border-0 px-2 py-1.5 font-normal shadow-none hover:bg-bg-secondary"
-                iconLeft={
-                  <Bot className="h-3.5 w-3.5 text-fg-tertiary transition-colors group-hover/item:text-primary" />
-                }
+        <div
+          ref={addMenuRef}
+          className="absolute left-1/2 top-full z-30 mt-2 flex -translate-x-1/2 flex-col items-center gap-[var(--spacing-s)]"
+        >
+          <button
+            type="button"
+            onClick={e => {
+              e.stopPropagation();
+              setShowMenu(open => !open);
+            }}
+            className="flow-canvas-icon-btn"
+            title="Añadir nodo"
+            aria-expanded={showMenu}
+          >
+            <Plus className="h-4 w-4" aria-hidden />
+          </button>
+          <AnimatePresence>
+            {showMenu ? (
+              <motion.div
+                key="start-add-menu"
+                initial={{ opacity: 0, scale: 0.96, y: 6 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.96, y: 6 }}
+                className="flow-canvas-add-menu flex flex-col gap-[var(--spacing-s)]"
+                onClick={e => e.stopPropagation()}
               >
-                <span className="label-small font-semibold text-fg-tertiary transition-colors group-hover/item:text-fg-primary">
-                  Agente
-                </span>
-              </Button>
-            </div>
-          )}
+                <button
+                  type="button"
+                  className="flow-canvas-add-menu__item"
+                  onClick={e => {
+                    e.stopPropagation();
+                    onAddNode('agent', id);
+                    setShowMenu(false);
+                  }}
+                >
+                  <span className="flow-canvas-add-menu__icon">
+                    <Bot className="h-3 w-3 text-fg-quaternary" aria-hidden />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="label font-medium text-fg-primary block leading-[var(--line-height-label)]">
+                      Agente
+                    </span>
+                    <span className="mt-0.5 block text-[length:var(--font-size-label-small)] font-normal leading-[var(--line-height-label-small)] text-fg-secondary">
+                      Añade un agente conversacional
+                    </span>
+                  </span>
+                </button>
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
         </div>
       )}
     </div>
   );
 });
 
+function AgentAddMenu({
+  id,
+  onClose,
+}: {
+  id: string;
+  onClose: () => void;
+}) {
+  const { onAddNode } = useFlowContext();
+  return (
+    <div
+      className="flow-canvas-add-menu flex flex-col gap-[var(--spacing-s)]"
+      onClick={e => e.stopPropagation()}
+    >
+      <button
+        type="button"
+        className="flow-canvas-add-menu__item"
+        onClick={e => {
+          e.stopPropagation();
+          onAddNode('agent', id);
+          onClose();
+        }}
+      >
+        <span className="flow-canvas-add-menu__icon">
+          <Bot className="h-3 w-3 text-fg-quaternary" aria-hidden />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="label font-medium text-fg-primary block leading-[var(--line-height-label)]">Agente</span>
+          <span className="mt-0.5 block text-[length:var(--font-size-label-small)] font-normal leading-[var(--line-height-label-small)] text-fg-secondary">
+            Añade un agente conversacional
+          </span>
+        </span>
+      </button>
+      <div className="flow-canvas-add-menu__item flow-canvas-add-menu__item--disabled" aria-disabled>
+        <span className="flow-canvas-add-menu__icon">
+          <Wrench className="h-3 w-3 text-fg-quaternary" aria-hidden />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="flow-canvas-add-menu__title-row">
+            <span className="label font-medium text-fg-primary leading-[var(--line-height-label)]">Herramienta</span>
+            <span className="flow-canvas-tag-soon">Pronto</span>
+          </span>
+          <span className="mt-0.5 block text-[length:var(--font-size-label-small)] font-normal leading-[var(--line-height-label-small)] text-fg-secondary">
+            Envía a una herramienta externa
+          </span>
+        </span>
+      </div>
+      <button
+        type="button"
+        className="flow-canvas-add-menu__item"
+        onClick={e => {
+          e.stopPropagation();
+          onAddNode('end', id);
+          onClose();
+        }}
+      >
+        <span className="flow-canvas-add-menu__icon">
+          <Flag className="h-3 w-3 text-fg-quaternary" aria-hidden />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="label font-medium text-fg-primary block leading-[var(--line-height-label)]">Fin</span>
+          <span className="mt-0.5 block text-[length:var(--font-size-label-small)] font-normal leading-[var(--line-height-label-small)] text-fg-secondary">
+            Finaliza la conversación
+          </span>
+        </span>
+      </button>
+    </div>
+  );
+}
+
 export const AgentNode = memo(({ id, data, selected }: any) => {
   const [showMenu, setShowMenu] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const { onAddNode, onDeleteNode, onDuplicateNode } = useFlowContext();
+  const { onDeleteNode, onDuplicateNode } = useFlowContext();
   const hasError = !data.instructions;
   const isOptimized = data.instructions && data.instructions.includes('### Role');
+  const emphasized = !hasError && (isHovered || selected);
+  const showNodeActions = selected || isHovered;
 
   return (
-    <motion.div 
-      className="relative group cursor-pointer"
+    <div
+      className="relative cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      whileHover={{ y: -2 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
     >
-      {/* Node Actions */}
       <AnimatePresence>
-        {selected && (
-          <motion.div 
-            initial={{ opacity: 0, x: -10 }}
+        {showNodeActions && (
+          <motion.div
+            initial={{ opacity: 0, x: -6 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -10 }}
-            className="absolute -right-12 top-0 flex flex-col gap-2 z-50"
+            exit={{ opacity: 0, x: -6 }}
+            transition={{ duration: 0.15 }}
+            className="absolute -right-10 top-0 z-50 flex flex-col gap-2"
           >
-            <button 
-              onClick={(e) => { e.stopPropagation(); onDuplicateNode(id); }}
-              className="w-9 h-9 bg-white border border-border-tertiary rounded-xl flex items-center justify-center text-fg-tertiary shadow-lg hover:text-primary hover:scale-110 transition-all"
+            <button
+              type="button"
+              onClick={e => {
+                e.stopPropagation();
+                onDuplicateNode(id);
+              }}
+              className="flow-canvas-icon-btn"
               title="Duplicar"
             >
-              <Copy className="w-4 h-4" />
+              <Copy className="h-4 w-4" aria-hidden />
             </button>
-            <button 
-              onClick={(e) => { e.stopPropagation(); onDeleteNode(id, 'node'); }}
-              className="w-9 h-9 bg-white border border-border-tertiary rounded-xl flex items-center justify-center text-fg-tertiary shadow-lg hover:text-fg-status-error hover:scale-110 transition-all"
+            <button
+              type="button"
+              onClick={e => {
+                e.stopPropagation();
+                onDeleteNode(id, 'node');
+              }}
+              className="flow-canvas-icon-btn flow-canvas-icon-btn--danger"
               title="Eliminar"
             >
-              <Trash2 className="w-4 h-4" />
+              <Trash2 className="h-4 w-4" aria-hidden />
             </button>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div className={cn(
-        "bg-white border rounded-2xl p-4 min-w-[240px] transition-all relative overflow-hidden",
-        selected ? "border-primary ring-4 ring-primary/5" : "border-border-tertiary shadow-sm",
-        hasError && "border-fg-status-error/50 ring-4 ring-fg-status-error/5",
-        isOptimized && "border-primary/30"
-      )}>
-        {/* Subtle AI Glow if optimized */}
+      <div
+        className={cn(
+          'flow-canvas-node__surface relative flex w-[300px] flex-col',
+          hasError && 'flow-canvas-node__surface--error',
+          emphasized && 'flow-canvas-node__surface--emphasized'
+        )}
+      >
         {isOptimized && (
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary/20 via-primary to-primary/20 animate-pulse" />
+          <div
+            className="pointer-events-none absolute left-0 right-0 top-0 z-[1] h-1 bg-gradient-to-r from-primary/20 via-primary to-primary/20 animate-pulse"
+            aria-hidden
+          />
         )}
 
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex items-center gap-3">
-            <div className={cn(
-              "w-10 h-10 rounded-xl flex items-center justify-center border transition-colors",
-              isOptimized ? "bg-primary/5 border-primary/20" : "bg-bg-secondary border-border-tertiary"
-            )}>
-              <Bot className={cn("w-5 h-5", isOptimized ? "text-primary" : "text-fg-tertiary")} />
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <p className="caption font-bold text-fg-primary leading-tight">{data.label || 'Nuevo Agente'}</p>
-                {isOptimized && <Sparkles className="w-3 h-3 text-primary animate-pulse" />}
-              </div>
-              <p className="label-small text-fg-tertiary mt-0.5 line-clamp-2 max-w-[140px]">
-                {data.instructions || 'Añade las instrucciones para el agente.'}
+        <div className="relative z-[2] flex w-full items-start gap-[var(--spacing-m)] py-[var(--spacing-sm)] pl-[var(--spacing-m)] pr-[var(--spacing-xs)]">
+          <div
+            className={cn(
+              'flow-canvas-node__avatar',
+              isOptimized && !hasError && 'flow-canvas-node__avatar--optimized'
+            )}
+          >
+            <Bot
+              className={cn('h-5 w-5', isOptimized && !hasError ? 'text-primary' : 'text-fg-quaternary')}
+              aria-hidden
+            />
+            {hasError ? <span className="flow-canvas-node__avatar-dot" aria-hidden /> : null}
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <p className="caption font-bold leading-tight text-fg-primary">
+                {data.label || 'Nuevo Agente'}
               </p>
+              {isOptimized && !hasError ? <Sparkles className="h-3 w-3 shrink-0 animate-pulse text-primary" aria-hidden /> : null}
             </div>
+            <p className="label mt-0.5 line-clamp-2 text-fg-secondary">
+              {data.instructions || 'Añade instrucciones para el agente'}
+            </p>
           </div>
-          {hasError ? (
-            <div className="bg-fg-status-error w-5 h-5 rounded-full flex items-center justify-center">
-              <AlertCircle className="w-3 h-3 text-white" />
+          {!hasError && isOptimized ? (
+            <div className="shrink-0 rounded-md bg-primary/10 px-1.5 py-0.5">
+              <span className="text-[8px] font-bold uppercase tracking-tighter text-primary">IA OK</span>
             </div>
-          ) : isOptimized && (
-            <div className="bg-primary/10 px-1.5 py-0.5 rounded-md">
-              <span className="text-[8px] font-bold text-primary uppercase tracking-tighter">IA OK</span>
-            </div>
-          )}
-        </div>
-        
-        <div className="flex gap-3 mt-4 pt-3 border-t border-border-tertiary/50">
-          <div className="flex items-center gap-1.5 text-fg-tertiary">
-            <Wrench className="w-3.5 h-3.5" />
-            <span className="label-small font-medium">+{data.tools?.length || 0}</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-fg-tertiary">
-            <Database className="w-3.5 h-3.5" />
-            <span className="label-small font-medium">+{data.knowledgeBase?.length || 0}</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-fg-tertiary">
-            <Save className="w-3.5 h-3.5" />
-            <span className="label-small font-medium">+{data.saveFields?.length || 0}</span>
-          </div>
+          ) : null}
         </div>
 
-        <Handle type="target" position={Position.Top} className="!bg-border-tertiary !w-2 !h-2 !-top-1" />
-        <Handle type="source" position={Position.Bottom} className="!bg-border-tertiary !w-2 !h-2 !-bottom-1" />
+        <div className="relative z-[2] flex flex-wrap gap-[var(--spacing-xs)] px-[var(--spacing-sm)] py-[var(--spacing-s)]">
+          <span className="flow-canvas-tag-filled-neutral">
+            <Wrench className="h-4 w-4 shrink-0" aria-hidden />
+            +{data.tools?.length || 0}
+          </span>
+          <span className="flow-canvas-tag-filled-neutral">
+            <Database className="h-4 w-4 shrink-0" aria-hidden />
+            +{data.knowledgeBase?.length || 0}
+          </span>
+          <span className="flow-canvas-tag-filled-neutral">
+            <Save className="h-4 w-4 shrink-0" aria-hidden />
+            +{data.saveFields?.length || 0}
+          </span>
+        </div>
+
+        <Handle type="target" position={Position.Top} className="!bg-border-tertiary !h-2 !w-2 !-top-1" />
+        <Handle type="source" position={Position.Bottom} className="!bg-border-tertiary !h-2 !w-2 !-bottom-1" />
       </div>
 
       <AnimatePresence>
-        {isHovered && !showMenu && (
-          <motion.div 
+        {isHovered && !showMenu ? (
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            className="absolute -bottom-2 left-1/2 -translate-x-1/2 translate-y-full z-30"
+            className="absolute -bottom-2 left-1/2 z-30 flex -translate-x-1/2 translate-y-full flex-col items-center gap-[var(--spacing-s)]"
           >
-            <button 
-              onClick={(e) => { e.stopPropagation(); setShowMenu(true); }}
-              className="w-7 h-7 rounded-full bg-white border border-border-tertiary text-fg-tertiary flex items-center justify-center shadow-md hover:scale-110 transition-transform hover:text-fg-primary hover:border-primary/50"
+            <button
+              type="button"
+              onClick={e => {
+                e.stopPropagation();
+                setShowMenu(true);
+              }}
+              className="flow-canvas-icon-btn"
+              title="Añadir nodo"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="h-4 w-4" aria-hidden />
             </button>
           </motion.div>
-        )}
+        ) : null}
       </AnimatePresence>
 
       <AnimatePresence>
-        {showMenu && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9, y: 10 }}
+        {showMenu ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 10 }}
-            className="absolute -bottom-2 left-1/2 -translate-x-1/2 translate-y-full z-30 bg-bg-primary border border-border-tertiary rounded-xl shadow-xl p-1 flex flex-col gap-1 min-w-[90px]"
+            exit={{ opacity: 0, scale: 0.96, y: 10 }}
+            className="absolute -bottom-2 left-1/2 z-30 flex -translate-x-1/2 translate-y-full flex-col items-center"
           >
-            <Button
-              type="button"
-              variant="Tertiary"
-              size="xs"
-              onClick={(e) => { e.stopPropagation(); onAddNode('agent', id); setShowMenu(false); }}
-              className="group/item w-full !min-h-0 justify-start rounded-lg border-0 px-2 py-1.5 font-normal shadow-none hover:bg-bg-secondary"
-              iconLeft={
-                <Bot className="h-3.5 w-3.5 text-fg-tertiary transition-colors group-hover/item:text-primary" />
-              }
-            >
-              <span className="label-small font-semibold text-fg-tertiary transition-colors group-hover/item:text-fg-primary">
-                Agente
-              </span>
-            </Button>
-            <div className="h-px bg-border-tertiary mx-1" />
-            <Button
-              type="button"
-              variant="Tertiary"
-              size="xs"
-              onClick={(e) => { e.stopPropagation(); onAddNode('end', id); setShowMenu(false); }}
-              className="group/item w-full !min-h-0 justify-start rounded-lg border-0 px-2 py-1.5 font-normal shadow-none hover:bg-bg-secondary"
-              iconLeft={
-                <CheckCircle2 className="h-3.5 w-3.5 text-fg-tertiary transition-colors group-hover/item:text-fg-primary" />
-              }
-            >
-              <span className="label-small font-semibold text-fg-tertiary transition-colors group-hover/item:text-fg-primary">
-                Fin
-              </span>
-            </Button>
+            <AgentAddMenu id={id} onClose={() => setShowMenu(false)} />
           </motion.div>
-        )}
+        ) : null}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 });
 
-export const EndNode = memo(({ id, data, selected }: any) => {
+export const EndNode = memo(({ id, selected }: any) => {
   const { onDeleteNode, onDuplicateNode } = useFlowContext();
-  return (
-    <div className="relative group cursor-pointer">
-      {/* Node Actions */}
-      {selected && (
-        <div className="absolute -right-12 top-0 flex flex-col gap-2 z-50">
-          <button 
-            onClick={(e) => { e.stopPropagation(); onDuplicateNode(id); }}
-            className="w-9 h-9 bg-white border border-border-tertiary rounded-xl flex items-center justify-center text-fg-tertiary shadow-lg hover:text-primary hover:scale-110 transition-all"
-            title="Duplicar"
-          >
-            <Copy className="w-4 h-4" />
-          </button>
-          <button 
-            onClick={(e) => { e.stopPropagation(); onDeleteNode(id, 'node'); }}
-            className="w-9 h-9 bg-white border border-border-tertiary rounded-xl flex items-center justify-center text-fg-tertiary shadow-lg hover:text-fg-status-error hover:scale-110 transition-all"
-            title="Eliminar"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </div>
-      )}
+  const [isHovered, setIsHovered] = useState(false);
+  const emphasized = selected || isHovered;
+  const showNodeActions = selected || isHovered;
 
-      <div className={cn(
-        "bg-white border rounded-full px-6 py-3 min-w-[140px] flex items-center justify-center gap-2 transition-all relative",
-        selected ? "border-primary ring-1 ring-primary hover:border-primary/50" : "border-border-tertiary hover:border-primary/50"
-      )}>
-        <CheckCircle2 className="w-4 h-4 text-fg-tertiary" />
-        <p className="label font-bold text-fg-primary">{data.label || 'Fin'}</p>
-        <Handle type="target" position={Position.Top} className="!bg-border-tertiary !w-2 !h-2 !-top-1" />
+  return (
+    <div
+      className="relative cursor-pointer"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <AnimatePresence>
+        {showNodeActions ? (
+          <motion.div
+            initial={{ opacity: 0, x: -6 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -6 }}
+            transition={{ duration: 0.15 }}
+            className="absolute -right-10 top-0 z-50 flex flex-col gap-2"
+          >
+            <button
+              type="button"
+              onClick={e => {
+                e.stopPropagation();
+                onDuplicateNode(id);
+              }}
+              className="flow-canvas-icon-btn"
+              title="Duplicar"
+            >
+              <Copy className="h-4 w-4" aria-hidden />
+            </button>
+            <button
+              type="button"
+              onClick={e => {
+                e.stopPropagation();
+                onDeleteNode(id, 'node');
+              }}
+              className="flow-canvas-icon-btn flow-canvas-icon-btn--danger"
+              title="Eliminar"
+            >
+              <Trash2 className="h-4 w-4" aria-hidden />
+            </button>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+
+      <div
+        className={cn(
+          'flow-canvas-node__surface relative flex min-w-[10rem] flex-col',
+          emphasized && 'flow-canvas-node__surface--emphasized'
+        )}
+      >
+        <div className="flex items-center gap-[var(--spacing-m)] py-[var(--spacing-sm)] pl-[var(--spacing-m)] pr-[var(--spacing-sm)]">
+          <Flag className="h-4 w-4 shrink-0 text-fg-quaternary" aria-hidden />
+          <p className="caption font-medium text-fg-primary">Fin</p>
+        </div>
+        <Handle type="target" position={Position.Top} className="!bg-border-tertiary !h-2 !w-2 !-top-1" />
       </div>
     </div>
   );

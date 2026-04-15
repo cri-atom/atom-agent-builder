@@ -1,0 +1,225 @@
+/* Layer 3 — Canvas flow nodes (consumes semantic + button + elevation tokens) */
+@layer components {
+  /* --- Card surface --- */
+  .flow-canvas-node__surface {
+    background: var(--color-bg-primary);
+    border: var(--stroke-xs) solid var(--color-border-tertiary);
+    border-radius: var(--radius-s);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    box-sizing: border-box;
+  }
+
+  .flow-canvas-node__surface--emphasized {
+    border-color: var(--color-border-primary);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-zinc-400) 70%, transparent);
+  }
+
+  .flow-canvas-node__surface--error {
+    border-color: var(--color-border-status-error);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-red-300) 90%, transparent);
+  }
+
+  /* --- Avatar (Agent) --- */
+  .flow-canvas-node__avatar {
+    position: relative;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-sm);
+    box-sizing: border-box;
+  }
+
+  .flow-canvas-node__avatar--optimized {
+    background: color-mix(in srgb, var(--color-primary) 8%, var(--color-bg-tertiary));
+    box-shadow: inset 0 0 0 var(--stroke-xs) color-mix(in srgb, var(--color-primary) 20%, transparent);
+  }
+
+  .flow-canvas-node__avatar-dot {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-l);
+    background: var(--color-fg-status-error);
+    border: var(--stroke-xs) solid var(--color-bg-primary);
+    box-sizing: border-box;
+  }
+
+  /* --- Icon-only secondary (Figma atom-icon-button) --- */
+  .flow-canvas-icon-btn {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: var(--spacing-s);
+    border-radius: var(--radius-s);
+    border: var(--stroke-xs) solid var(--buttons-border-secondary-enabled);
+    background: var(--buttons-bg-secondary-enabled);
+    color: var(--buttons-fg-secondary-enabled);
+    box-shadow: var(--elevation-card);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .flow-canvas-icon-btn:hover {
+    background: var(--buttons-bg-secondary-hovered);
+  }
+
+  .flow-canvas-icon-btn:active {
+    background: var(--buttons-bg-secondary-pressed);
+  }
+
+  .flow-canvas-icon-btn:focus-visible {
+    outline: none;
+    background: var(--buttons-bg-secondary-focused);
+    box-shadow: var(--elevation-card), var(--buttons-shadow-focus);
+  }
+
+  .flow-canvas-icon-btn--danger:hover {
+    color: var(--color-fg-status-error);
+  }
+
+  /* --- Tag filled neutral (Agent footer metrics) --- */
+  .flow-canvas-tag-filled-neutral {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-s);
+    max-width: 12.5rem;
+    padding: var(--spacing-xxs) var(--spacing-s) var(--spacing-xxs) var(--spacing-xs);
+    border-radius: var(--radius-pill);
+    background: var(--color-bg-quaternary);
+    color: var(--color-fg-secondary);
+    font-size: var(--font-size-label-small);
+    line-height: var(--line-height-label-small);
+    font-weight: var(--font-weight-medium);
+  }
+
+  /* --- Tag outlined success (Condición / Fin footer) --- */
+  .flow-canvas-tag-outlined-success {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-s);
+    max-width: 12.5rem;
+    padding: var(--spacing-xxs) var(--spacing-s) var(--spacing-xxs) var(--spacing-xs);
+    border-radius: var(--radius-pill);
+    border: var(--stroke-xs) solid var(--color-border-status-success);
+    background: transparent;
+    color: var(--color-fg-status-success);
+    font-size: var(--font-size-label-small);
+    line-height: var(--line-height-label-small);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .flow-canvas-tag-outlined-success__dot {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: var(--radius-l);
+    background: var(--color-fg-status-success);
+  }
+
+  .flow-canvas-tag-soon {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 var(--spacing-xs);
+    border-radius: var(--radius-pill);
+    background: var(--color-bg-quaternary);
+    color: var(--color-fg-tertiary);
+    font-size: var(--font-size-footnote);
+    line-height: var(--line-height-footnote);
+    font-weight: var(--font-weight-medium);
+  }
+
+  /* --- Add-node dropdown --- */
+  .flow-canvas-add-menu {
+    width: 13.3125rem;
+    max-width: min(13.3125rem, 90vw);
+    padding: var(--spacing-xs);
+    border-radius: var(--radius-s);
+    border: var(--stroke-xs) solid var(--color-border-tertiary);
+    background: var(--color-bg-primary);
+    box-shadow: var(--elevation-popover);
+    box-sizing: border-box;
+  }
+
+  .flow-canvas-add-menu__item {
+    display: flex;
+    gap: var(--spacing-xs);
+    align-items: flex-start;
+    width: 100%;
+    text-align: left;
+    padding: var(--spacing-xxs) var(--spacing-xs);
+    margin: 0;
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-s);
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+    transition: background 0.12s ease;
+  }
+
+  .flow-canvas-add-menu__item:hover:not(:disabled) {
+    background: var(--color-bg-secondary);
+  }
+
+  .flow-canvas-add-menu__item:focus-visible {
+    outline: none;
+    background: var(--color-bg-secondary);
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--color-primary) 25%, transparent);
+  }
+
+  .flow-canvas-add-menu__item--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+
+  .flow-canvas-add-menu__icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-tertiary);
+    border-radius: var(--radius-s);
+  }
+
+  .flow-canvas-add-menu__title-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-s);
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  /* --- Edge condition card (narrow) --- */
+  .flow-canvas-edge-card {
+    min-width: 10rem;
+    max-width: 14rem;
+    cursor: pointer;
+  }
+
+  .flow-canvas-edge-card__header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-m);
+    padding: var(--spacing-sm) var(--spacing-xs) var(--spacing-sm) var(--spacing-m);
+  }
+
+  .flow-canvas-edge-card__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+    flex: 1;
+  }
+}
