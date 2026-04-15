@@ -8,11 +8,13 @@ import { HttpRequestModal } from './HttpRequestModal';
 import { FieldCreationModal } from './FieldCreationModal';
 import { AgentNodeData, EndNodeData, LLMEdgeData, SaveField, KnowledgeBaseDoc, Tool } from '../types';
 import { Button } from './Button';
-import { CANVAS_CHROME_TOP, CANVAS_PANEL_WIDTH_PX } from '../lib/canvasChrome';
 import { CollapsibleSectionHeader, InspectorTabs, PanelSection } from './panel';
 
 const formFieldBase =
   'w-full rounded-[var(--radius-s)] border border-border-secondary bg-bg-primary px-[var(--spacing-sm)] py-[var(--spacing-s)] caption text-fg-primary outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary/20';
+
+/** Panel width (px); positioning lives on the parent in Canvas. */
+export const FLOW_INSPECTOR_PANEL_WIDTH_PX = 382;
 
 interface ConfigPanelProps {
   selectedElement: any;
@@ -20,6 +22,8 @@ interface ConfigPanelProps {
   onDelete: () => void;
   onClose: () => void;
   onOpenPromptEditor: () => void;
+  /** Passed from App for future actions; optional until wired in UI */
+  onDuplicate?: () => void;
 }
 
 interface IntegrationAccordionItemProps {
@@ -165,16 +169,11 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
   };
 
   return (
-    <motion.div
-      initial={{ x: 48, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      exit={{ x: 48, opacity: 0 }}
-      transition={{ type: 'spring', damping: 28, stiffness: 320 }}
-      className="absolute right-[var(--spacing-s)] z-20 flex max-w-full min-h-0 flex-col overflow-hidden rounded-[var(--radius-m)] border border-border-tertiary bg-bg-primary shadow-[0px_6px_14px_0px_rgba(9,9,11,0.08)]"
+    <div
+      className="flex h-full min-h-0 flex-col overflow-hidden rounded-[var(--radius-m)] border border-border-tertiary bg-bg-primary shadow-[0px_6px_14px_0px_rgba(9,9,11,0.08)]"
       style={{
-        top: CANVAS_CHROME_TOP,
-        bottom: 'var(--spacing-s)',
-        width: `min(${CANVAS_PANEL_WIDTH_PX}px, calc(100% - var(--spacing-s) * 2))`,
+        /* 100vw evita ciclo de % con el wrapper pointer-events-auto en Canvas */
+        width: `min(${FLOW_INSPECTOR_PANEL_WIDTH_PX}px, calc(100vw - var(--spacing-s) * 4))`,
       }}
     >
       <header className="flex items-center gap-[var(--spacing-s)] border-b border-border-tertiary px-[var(--spacing-m)] py-[var(--spacing-s)]">
@@ -884,6 +883,6 @@ export const ConfigPanel: React.FC<ConfigPanelProps> = ({
         </>,
         document.body
       )}
-    </motion.div>
+    </div>
   );
 };

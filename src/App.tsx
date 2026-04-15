@@ -10,11 +10,8 @@ import { DashboardLayout } from './components/DashboardLayout';
 import { Dashboard } from './components/Dashboard';
 import { Settings } from 'lucide-react';
 import { Canvas } from './components/Canvas';
-import { ConfigPanel } from './components/ConfigPanel';
 import { PromptEditorModal } from './components/PromptEditorModal';
 import { Flow, GlobalConfig } from './types';
-import { AnimatePresence } from 'motion/react';
-
 const INITIAL_FLOWS: Flow[] = [
   {
     id: '1',
@@ -456,20 +453,22 @@ export default function App() {
                   onBack={() => setActiveTab('dashboard')}
                   globalConfig={currentFlow.globalConfig || DEFAULT_GLOBAL_CONFIG}
                   onUpdateGlobalConfig={handleUpdateGlobalConfig}
-                  rightInspectorOpen={!!selectedElement}
+                  selectedElement={selectedElement}
+                  onUpdateSelectedElement={handleUpdateElement}
+                  onDeleteSelectedElement={() => {
+                    if (!selectedElement) return;
+                    handleDeleteElement(
+                      selectedElement.id,
+                      'position' in selectedElement ? 'node' : 'edge'
+                    );
+                  }}
+                  onDuplicateSelectedElement={() => {
+                    if (!selectedElement) return;
+                    handleDuplicateElement(selectedElement.id);
+                  }}
+                  onCloseInspector={() => setSelectedElement(null)}
+                  onOpenPromptEditor={() => setIsPromptEditorOpen(true)}
                 />
-                <AnimatePresence>
-                  {selectedElement && (
-                    <ConfigPanel
-                      selectedElement={selectedElement}
-                      onUpdate={handleUpdateElement}
-                      onDelete={() => handleDeleteElement(selectedElement.id, 'position' in selectedElement ? 'node' : 'edge')}
-                      onDuplicate={() => handleDuplicateElement(selectedElement.id)}
-                      onClose={() => setSelectedElement(null)}
-                      onOpenPromptEditor={() => setIsPromptEditorOpen(true)}
-                    />
-                  )}
-                </AnimatePresence>
 
                 <PromptEditorModal
                   isOpen={isPromptEditorOpen}

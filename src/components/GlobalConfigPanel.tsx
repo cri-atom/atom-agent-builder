@@ -3,7 +3,6 @@ import { X, Plus, Trash2, ChevronDown, ChevronLeft, ChevronRight, Search, Ban } 
 import { motion, AnimatePresence } from 'motion/react';
 import { GlobalConfig, GlobalStage, SaveField } from '../types';
 import { Button } from './Button';
-import { CANVAS_CHROME_TOP, CANVAS_PANEL_WIDTH_PX } from '../lib/canvasChrome';
 import {
   PanelSection,
   PipelineTypeTabs,
@@ -27,6 +26,9 @@ const formSelectClass =
 
 const formInputClass =
   'w-full rounded-[var(--radius-s)] border border-border-secondary bg-bg-primary px-[var(--spacing-sm)] py-[var(--spacing-s)] caption text-fg-primary outline-none transition-colors focus:border-[var(--color-border-interactive-secondary-focused)] focus:ring-2 focus:ring-[var(--color-alpha-400)]';
+
+/** Panel width (px); positioning lives on the parent in Canvas. */
+export const GLOBAL_CONFIG_PANEL_WIDTH_PX = 382;
 
 export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
   config,
@@ -104,28 +106,22 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
 
   return (
     <div
-      className="pointer-events-none absolute z-30 flex"
-      style={{
-        left: 'var(--spacing-s)',
-        top: CANVAS_CHROME_TOP,
-        bottom: 'var(--spacing-s)',
-      }}
+      className={`relative flex h-full min-h-0 w-max max-w-full ${!isOpen ? 'min-w-8' : ''}`}
     >
-      <div className="pointer-events-auto relative flex h-full min-h-0">
-        {!isOpen && (
-          <GlobalConfigOpenButton onClick={onToggle} className="absolute left-0 top-0 z-40" />
-        )}
+      {!isOpen && (
+        <GlobalConfigOpenButton onClick={onToggle} className="absolute left-0 top-0 z-40" />
+      )}
 
-        {/* Global Config Panel */}
-        <motion.div
-          initial={false}
-          animate={{
-            width: isOpen ? CANVAS_PANEL_WIDTH_PX : 0,
-            opacity: isOpen ? 1 : 0,
-          }}
-          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="flex h-full max-h-full min-h-0 flex-col overflow-hidden rounded-[var(--radius-m)] border border-border-tertiary bg-bg-primary shadow-[0px_6px_14px_0px_rgba(9,9,11,0.08)]"
-        >
+      {/* Global Config Panel */}
+      <motion.div
+        initial={false}
+        animate={{
+          width: isOpen ? GLOBAL_CONFIG_PANEL_WIDTH_PX : 0,
+          opacity: isOpen ? 1 : 0,
+        }}
+        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+        className="flex h-full max-h-full min-h-0 flex-col overflow-hidden rounded-[var(--radius-m)] border border-border-tertiary bg-bg-primary shadow-[0px_6px_14px_0px_rgba(9,9,11,0.08)]"
+      >
           {isOpen && (
             <>
               <header className="flex shrink-0 items-center gap-[var(--spacing-s)] border-b border-border-tertiary px-[var(--spacing-m)] py-[var(--spacing-s)]">
@@ -397,9 +393,7 @@ export const GlobalConfigPanel: React.FC<GlobalConfigPanelProps> = ({
               </div>
             </>
           )}
-        </motion.div>
-
-      </div>
+      </motion.div>
     </div>
   );
 };

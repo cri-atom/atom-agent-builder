@@ -181,7 +181,20 @@ function AgentAddMenu({
 export const AgentNode = memo(({ id, data, selected }: any) => {
   const [showMenu, setShowMenu] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const addMenuRef = useRef<HTMLDivElement>(null);
   const { onDeleteNode, onDuplicateNode } = useFlowContext();
+
+  useEffect(() => {
+    if (!showMenu) return;
+    const onPointerDown = (e: MouseEvent) => {
+      if (!addMenuRef.current?.contains(e.target as Node)) {
+        setShowMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', onPointerDown, true);
+    return () => document.removeEventListener('mousedown', onPointerDown, true);
+  }, [showMenu]);
+
   const hasError = !data.instructions;
   const isOptimized = data.instructions && data.instructions.includes('### Role');
   const emphasized = !hasError && (isHovered || selected);
@@ -293,39 +306,41 @@ export const AgentNode = memo(({ id, data, selected }: any) => {
       </div>
 
       <AnimatePresence>
-        {isHovered && !showMenu ? (
+        {(isHovered || showMenu) && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            ref={addMenuRef}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="absolute -bottom-2 left-1/2 z-30 flex -translate-x-1/2 translate-y-full flex-col items-center gap-[var(--spacing-s)]"
+            exit={{ opacity: 0, y: 8 }}
+            className="absolute left-1/2 top-full z-30 mt-2 flex -translate-x-1/2 flex-col items-center gap-[var(--spacing-s)]"
+            onClick={e => e.stopPropagation()}
           >
             <button
               type="button"
               onClick={e => {
                 e.stopPropagation();
-                setShowMenu(true);
+                setShowMenu(open => !open);
               }}
               className="flow-canvas-icon-btn"
               title="Añadir nodo"
+              aria-expanded={showMenu}
             >
               <Plus className="h-4 w-4" aria-hidden />
             </button>
+            <AnimatePresence>
+              {showMenu ? (
+                <motion.div
+                  key="agent-add-menu"
+                  initial={{ opacity: 0, scale: 0.96, y: 6 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.96, y: 6 }}
+                >
+                  <AgentAddMenu id={id} onClose={() => setShowMenu(false)} />
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
           </motion.div>
-        ) : null}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {showMenu ? (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 10 }}
-            className="absolute -bottom-2 left-1/2 z-30 flex -translate-x-1/2 translate-y-full flex-col items-center"
-          >
-            <AgentAddMenu id={id} onClose={() => setShowMenu(false)} />
-          </motion.div>
-        ) : null}
+        )}
       </AnimatePresence>
     </div>
   );

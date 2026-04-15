@@ -35,15 +35,17 @@ import { motion, AnimatePresence } from 'motion/react';
 import { FlowProvider } from '../context/FlowContext';
 import { Button } from './Button';
 import { ChatSimulator } from './ChatSimulator';
-import { GlobalConfigPanel } from './GlobalConfigPanel';
+import {
+  GlobalConfigPanel,
+  GLOBAL_CONFIG_PANEL_WIDTH_PX,
+} from './GlobalConfigPanel';
+import { ConfigPanel, FLOW_INSPECTOR_PANEL_WIDTH_PX } from './ConfigPanel';
 import { SmartSuggestions } from './SmartSuggestions';
 import { GlobalConfig } from '../types';
 import { getFlowSuggestions } from '../services/geminiService';
-import {
-  CANVAS_CHROME_BOTTOM,
-  CANVAS_CHROME_TOP,
-  CANVAS_PANEL_WIDTH_PX,
-} from '../lib/canvasChrome';
+
+/** Matches floating top bars: `top-[spacing-s]` + `h-10` + lower spacing. */
+const FLOW_TOP_BAR_BAND = 'calc(var(--spacing-s) + 2.5rem + var(--spacing-s))';
 
 const nodeTypes = {
   start: StartNode,
@@ -71,8 +73,12 @@ interface CanvasProps {
   onBack: () => void;
   globalConfig: GlobalConfig;
   onUpdateGlobalConfig: (config: GlobalConfig) => void;
-  /** Inspector derecho (ConfigPanel) abierto: reserva padding horizontal al grafo */
-  rightInspectorOpen?: boolean;
+  selectedElement: any | null;
+  onUpdateSelectedElement: (data: any) => void;
+  onDeleteSelectedElement: () => void;
+  onDuplicateSelectedElement: () => void;
+  onCloseInspector: () => void;
+  onOpenPromptEditor: () => void;
 }
 
 function FlowBottomToolbar({
@@ -180,7 +186,12 @@ export const Canvas: React.FC<CanvasProps> = ({
   onBack,
   globalConfig,
   onUpdateGlobalConfig,
-  rightInspectorOpen = false,
+  selectedElement,
+  onUpdateSelectedElement,
+  onDeleteSelectedElement,
+  onDuplicateSelectedElement,
+  onCloseInspector,
+  onOpenPromptEditor,
 }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -303,10 +314,10 @@ export const Canvas: React.FC<CanvasProps> = ({
   };
 
   const leftPad = isGlobalConfigOpen
-    ? `calc(${CANVAS_PANEL_WIDTH_PX}px + var(--spacing-s) * 2)`
+    ? `calc(${GLOBAL_CONFIG_PANEL_WIDTH_PX}px + var(--spacing-s) * 2)`
     : 'var(--spacing-s)';
-  const rightPad = rightInspectorOpen
-    ? `calc(${CANVAS_PANEL_WIDTH_PX}px + var(--spacing-s) * 2)`
+  const rightPad = selectedElement
+    ? `calc(${FLOW_INSPECTOR_PANEL_WIDTH_PX}px + var(--spacing-s) * 2)`
     : 'var(--spacing-s)';
 
   return (
@@ -317,21 +328,59 @@ export const Canvas: React.FC<CanvasProps> = ({
       edges={edges}
     >
       <div className="relative h-full min-h-0 w-full flex-1 overflow-hidden bg-bg-secondary">
-        <GlobalConfigPanel
-          config={globalConfig}
-          onUpdate={onUpdateGlobalConfig}
-          isOpen={isGlobalConfigOpen}
-          onToggle={() => setIsGlobalConfigOpen(!isGlobalConfigOpen)}
-        />
+        <div
+          className="pointer-events-none absolute left-[var(--spacing-s)] z-30 flex max-w-[min(100%,calc(100%-var(--spacing-s)*2))]"
+          style={{ top: FLOW_TOP_BAR_BAND, bottom: 'var(--spacing-s)' }}
+        >
+          {/* No usar w-full aquí: el padre absolute solo tiene `left` y width:auto; 100% colapsa el ancho. */}
+          <div className="pointer-events-auto flex h-full min-h-0 shrink-0">
+            <GlobalConfigPanel
+              config={globalConfig}
+              onUpdate={onUpdateGlobalConfig}
+              isOpen={isGlobalConfigOpen}
+              onToggle={() => setIsGlobalConfigOpen(!isGlobalConfigOpen)}
+            />
+          </div>
+        </div>
+
+        <AnimatePresence>
+          {selectedElement && (
+            <motion.div
+              key={selectedElement.id}
+              initial={{ x: 48, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 48, opacity: 0 }}
+              transition={{ type: 'spring', damping: 28, stiffness: 320 }}
+              className="pointer-events-none absolute z-20 flex justify-end"
+              style={{
+                top: FLOW_TOP_BAR_BAND,
+                bottom: 'var(--spacing-s)',
+                left: 'var(--spacing-s)',
+                right: 'var(--spacing-s)',
+              }}
+            >
+              <div className="pointer-events-auto flex h-full w-fit min-h-0 shrink-0 justify-end">
+                <ConfigPanel
+                  selectedElement={selectedElement}
+                  onUpdate={onUpdateSelectedElement}
+                  onDelete={onDeleteSelectedElement}
+                  onDuplicate={onDuplicateSelectedElement}
+                  onClose={onCloseInspector}
+                  onOpenPromptEditor={onOpenPromptEditor}
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Top-left actions (Figma Acciones_Izq) */}
         <div
-          className={`absolute top-[var(--spacing-s)] left-[var(--spacing-s)] z-20 flex h-10 max-w-[min(100%,calc(100%-9rem))] items-center gap-[var(--spacing-xs)] rounded-[var(--radius-s)] bg-bg-primary px-[var(--spacing-xs)] py-0 ${barElevatedShadow}`}
+          className={`absolute top-[var(--spacing-s)] left-[var(--spacing-s)] z-20 flex h-10 max-w-[min(100%,calc(100%-9rem))] items-center gap-[var(--spacing-xs)] rounded-[var(--radius-s)] bg-[var(--color-bg-primary)] px-[var(--spacing-xs)] py-0 ${barElevatedShadow}`}
         >
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-s)] bg-primary">
             <Bot className="h-5 w-5 text-fg-inverse-primary" />
           </div>
-          <Button variant="Tertiary" size="s" onClick={onBack} className="shrink-0 p-2">
+          <Button variant="Tertiary" size="s" onClick={onBack}>
             <ArrowLeft className="h-4 w-4 text-fg-secondary" />
           </Button>
           <input
@@ -345,7 +394,7 @@ export const Canvas: React.FC<CanvasProps> = ({
             variant="Tertiary"
             size="s"
             onClick={() => setIsSuggestionsOpen(!isSuggestionsOpen)}
-            className={`shrink-0 p-2 ${isSuggestionsOpen ? 'text-primary' : 'text-fg-secondary'}`}
+            className={`${isSuggestionsOpen ? 'text-primary' : 'text-fg-secondary'}`}
             title="Sugerencias IA"
           >
             <Search className="h-4 w-4" />
@@ -354,14 +403,13 @@ export const Canvas: React.FC<CanvasProps> = ({
 
         {/* Top-right actions (Figma Acciones_Der) */}
         <div
-          className={`absolute top-[var(--spacing-s)] right-[var(--spacing-s)] z-20 flex h-10 items-center gap-[var(--spacing-xs)] rounded-[var(--radius-s)] bg-bg-primary px-[var(--spacing-xs)] py-0 ${barElevatedShadow}`}
+          className={`absolute top-[var(--spacing-s)] right-[var(--spacing-s)] z-20 flex h-10 items-center gap-[var(--spacing-xs)] rounded-[var(--radius-s)] bg-[var(--color-bg-primary)] px-[var(--spacing-xs)] py-0 ${barElevatedShadow}`}
         >
           <Button
             variant="Tertiary"
             size="s"
             loading={isSaving}
             onClick={handleSave}
-            className="shrink-0 p-2"
             title="Guardar"
           >
             <Save className="h-4 w-4 text-fg-secondary" />
@@ -380,9 +428,8 @@ export const Canvas: React.FC<CanvasProps> = ({
             variant="Tertiary"
             size="s"
             onClick={() => setIsChatSimulatorOpen(!isChatSimulatorOpen)}
-            className={`!min-h-0 shrink-0 gap-1 rounded-[var(--radius-s)] px-2 py-1 ${
-              isChatSimulatorOpen ? 'bg-primary/10 text-primary' : ''
-            }`}
+            className={`!min-h-0 shrink-0 gap-1 rounded-[var(--radius-s)] px-2 py-1 ${isChatSimulatorOpen ? 'bg-primary/10 text-primary' : ''
+              }`}
             iconLeft={<Smartphone className="h-4 w-4 shrink-0" />}
           >
             <span className="caption font-medium">Simular</span>
@@ -392,12 +439,9 @@ export const Canvas: React.FC<CanvasProps> = ({
           </Button>
         </div>
 
+        {/* Canvas container */}
         <div
           className="absolute inset-0 min-h-0"
-          style={{
-            paddingTop: CANVAS_CHROME_TOP,
-            paddingBottom: CANVAS_CHROME_BOTTOM,
-          }}
         >
           <div className="relative h-full min-h-0 w-full">
             <SmartSuggestions
@@ -409,28 +453,28 @@ export const Canvas: React.FC<CanvasProps> = ({
             />
 
             <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onNodeClick={onNodeClick}
-            onEdgeClick={onEdgeClick}
-            onPaneClick={onPaneClick}
-            onNodesDelete={onNodesDelete}
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
-            fitView
-            className="bg-bg-secondary"
-            style={{
-              paddingLeft: leftPad,
-              paddingRight: rightPad,
-            }}
-            proOptions={{ hideAttribution: true }}
-          >
-            <Background gap={16} size={1} color="var(--color-border-tertiary, #d4d4d8)" />
-            <FlowBottomToolbar isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
-          </ReactFlow>
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              onNodeClick={onNodeClick}
+              onEdgeClick={onEdgeClick}
+              onPaneClick={onPaneClick}
+              onNodesDelete={onNodesDelete}
+              nodeTypes={nodeTypes}
+              edgeTypes={edgeTypes}
+              fitView
+              className="bg-bg-secondary"
+              style={{
+                paddingLeft: leftPad,
+                paddingRight: rightPad,
+              }}
+              proOptions={{ hideAttribution: true }}
+            >
+              <Background gap={16} size={1} color="var(--color-fg-disabled)" variant="dots" />
+              <FlowBottomToolbar isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
+            </ReactFlow>
           </div>
         </div>
 
